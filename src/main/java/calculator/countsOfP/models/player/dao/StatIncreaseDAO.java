@@ -8,8 +8,6 @@ import org.springframework.data.repository.ListCrudRepository;
 import java.util.List;
 
 public interface StatIncreaseDAO extends ListCrudRepository<StatIncrease, Long> {
-    List<StatIncrease> findByAttribute(Attribute attribute);
-    List<StatIncrease> findByAttributeAndStat (Attribute attribute, Stat stat);
-
+    StatIncrease findByAttributeAndAttributeValueAndStat(Attribute attribute, Integer value, Stat stat);
     List<StatIncrease> findByAttributeAndAttributeValueBetween(Attribute attribute, Integer initialValue, Integer finalValue);
 }

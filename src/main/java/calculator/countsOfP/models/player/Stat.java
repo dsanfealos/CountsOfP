@@ -23,6 +23,9 @@ public class Stat {
     @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StatIncrease> statIncreases = new ArrayList<>();
 
+    @Column(name = "base_value", columnDefinition = "Decimal(5,2)")
+    private Double baseValue;
+
     public Long getId() {
         return id;
     }
@@ -53,5 +56,13 @@ public class Stat {
 
     public void setStatIncreases(List<StatIncrease> statIncreases) {
         this.statIncreases = statIncreases;
+    }
+
+    public Double getBaseValue() {
+        return baseValue;
+    }
+
+    public void setBaseValue(Double baseValue) {
+        this.baseValue = baseValue;
     }
 }
