@@ -1,7 +1,7 @@
 package calculator.countsOfP.services;
 
-import calculator.countsOfP.api.models.AttributesBody;
-import calculator.countsOfP.api.models.StatsResponse;
+import calculator.countsOfP.api.models.body.AttributesBody;
+import calculator.countsOfP.api.models.response.StatsResponse;
 import calculator.countsOfP.models.player.Attribute;
 import calculator.countsOfP.models.player.Stat;
 import calculator.countsOfP.models.player.StatIncrease;
@@ -17,10 +17,10 @@ import java.util.stream.LongStream;
 @Service
 public class PlayerService {
 
-    private LevelPDAO levelPDAO;
-    private StatIncreaseDAO statIncreaseDAO;
-    private AttributeDAO attributeDAO;
-    private StatDAO statDAO;
+    private final LevelPDAO levelPDAO;
+    private final StatIncreaseDAO statIncreaseDAO;
+    private final AttributeDAO attributeDAO;
+    private final StatDAO statDAO;
 
 
     public PlayerService(LevelPDAO levelPDAO, StatIncreaseDAO statIncreaseDAO, AttributeDAO attributeDAO, StatDAO statDAO) {
@@ -62,6 +62,7 @@ public class PlayerService {
     }
 
     public StatsResponse simulateStats(AttributesBody initialBody, AttributesBody finalBody){
+        //Todo Include amulets' effects
         StatsResponse response = new StatsResponse();
         response.setErgoCost(costUpgradeLevelP(initialBody.getLevel(), finalBody.getLevel()));
 
@@ -97,23 +98,23 @@ public class PlayerService {
     public Map<Long, Double> increasedStatsMap(List<Integer> initialAttributes, List<Integer> finalAttributes){
         Map<Long, Double> finalStats = new HashMap<>();
         List<Attribute> attributes = attributeDAO.findAll();
-        //Llegan atributos iniciales y deseados
+        //We get initial and desired attributes
         for (int index = 0; index<attributes.size(); index++){
-            //Para cada atributo, creamos una lista de los incrementos que sufrirían los stats relacionados
+            //We create a list of the stat increase for each attribute they are related to
             Attribute attribute = attributes.get(index);
             Integer initialAttribute = initialAttributes.get(index);
             Integer finalAttribute = finalAttributes.get(index);
             Map<Long, Double> increasedStats = increaseAttribute(attribute.getId(),
                     initialAttribute, finalAttribute);
-            //Para cada stat afectado, los añadimos a la lista finalStats, para ir acumulando
-            // el incremento de cada stat, causado por los diferentes atributos.
+            //For each altered stat, we add them to finalStats map, in order to stack up each
+            // stat increase caused by different attributes.
             for (Long statId: increasedStats.keySet()){
-                //Si ya existe el stat en la lista, le sumamos el incremento
+                //If the stat already exists in the map, we add the additional increases.
                 if (finalStats.containsKey(statId)){
                     Double result = increasedStats.get(statId) + finalStats.get(statId);
                     finalStats.replace(statId, finalStats.get(statId), result);
                 }else {
-                    //SI no existe, sumamos el valor base del stat y el incremento total con este atributo.
+                    //If not, we add the base value and the first increase.
                     Stat stat = statDAO.findById(statId).get();
                     Double baseIncrease = stat.getBaseValue() + statIncreaseDAO.
                             findByAttributeAndAttributeValueAndStat(attribute, finalAttribute, stat).getIncrease();

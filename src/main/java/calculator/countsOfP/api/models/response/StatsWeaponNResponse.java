@@ -1,9 +1,9 @@
-package calculator.countsOfP.api.models;
+package calculator.countsOfP.api.models.response;
 
 import calculator.countsOfP.models.weapon.Blade;
 import calculator.countsOfP.models.weapon.Handle;
 
-public class StatsWeaponNBody {
+public class StatsWeaponNResponse {
 
 
     private String name;

@@ -1,7 +1,7 @@
 package calculator.countsOfP.services;
 
-import calculator.countsOfP.api.models.AttributesBody;
-import calculator.countsOfP.api.models.StatsResponse;
+import calculator.countsOfP.api.models.body.AttributesBody;
+import calculator.countsOfP.api.models.response.StatsResponse;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
