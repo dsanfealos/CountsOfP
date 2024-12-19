@@ -1,4 +1,4 @@
-package calculator.countsOfP.api.models;
+package calculator.countsOfP.api.models.body;
 
 public class AttributesBody {
 

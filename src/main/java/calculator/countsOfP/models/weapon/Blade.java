@@ -1,10 +1,7 @@
 package calculator.countsOfP.models.weapon;
 
-import calculator.countsOfP.api.models.StatsWeaponNBody;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "blade")
