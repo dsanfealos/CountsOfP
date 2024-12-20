@@ -8,11 +8,14 @@ public class StatsWeaponNBody {
 
     private Long currentLevel;
 
+    private Long finalLevel;
+
     private Handle handle;
 
-    public StatsWeaponNBody(String bladeName, Long currentLevel, Handle handle) {
+    public StatsWeaponNBody(String bladeName, Long currentLevel, Long finalLevel, Handle handle) {
         this.bladeName = bladeName;
         this.currentLevel = currentLevel;
+        this.finalLevel = finalLevel;
         this.handle = handle;
     }
 
@@ -33,6 +36,14 @@ public class StatsWeaponNBody {
 
     public void setCurrentLevel(Long currentLevel) {
         this.currentLevel = currentLevel;
+    }
+
+    public Long getFinalLevel() {
+        return finalLevel;
+    }
+
+    public void setFinalLevel(Long finalLevel) {
+        this.finalLevel = finalLevel;
     }
 
     public Handle getHandle() {
