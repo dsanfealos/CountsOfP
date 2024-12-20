@@ -8,7 +8,7 @@ public class StatsWeaponSBody {
 
     private Long finalLevel;
 
-    public StatsWeaponSBody(Long currentLevel) {
+    public StatsWeaponSBody() {
     }
 
     public StatsWeaponSBody(String weaponName, Long currentLevel, Long finalLevel) {

@@ -8,7 +8,7 @@ public class StatsWeaponNResponse {
 
     private String name;
 
-    private String spritePath;
+    private Long ergoCost;
 
     private Double weight;
 
@@ -28,6 +28,24 @@ public class StatsWeaponNResponse {
 
     private Handle handle;
 
+    public StatsWeaponNResponse() {
+    }
+
+    public StatsWeaponNResponse(String name, Long ergoCost, Double weight, Integer totalAttack, Character motivity, Character technique,
+                                Character advance, Integer physicalAttack, Integer elementalAttack, Blade blade, Handle handle) {
+        this.name = name;
+        this.ergoCost = ergoCost;
+        this.weight = weight;
+        this.totalAttack = totalAttack;
+        this.motivity = motivity;
+        this.technique = technique;
+        this.advance = advance;
+        this.physicalAttack = physicalAttack;
+        this.elementalAttack = elementalAttack;
+        this.blade = blade;
+        this.handle = handle;
+    }
+
     public String getName() {
         return name;
     }
@@ -36,12 +54,12 @@ public class StatsWeaponNResponse {
         this.name = name;
     }
 
-    public String getSpritePath() {
-        return spritePath;
+    public Long getErgoCost() {
+        return ergoCost;
     }
 
-    public void setSpritePath(String spritePath) {
-        this.spritePath = spritePath;
+    public void setErgoCost(Long ergoCost) {
+        this.ergoCost = ergoCost;
     }
 
     public Double getWeight() {
