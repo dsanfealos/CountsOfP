@@ -1,4 +1,4 @@
-package calculator.countsOfP.models;
+package calculator.countsOfP.models.build;
 
 import jakarta.persistence.*;
 

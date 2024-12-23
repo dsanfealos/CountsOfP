@@ -4,7 +4,7 @@ import calculator.countsOfP.api.models.body.AttributesBody;
 import calculator.countsOfP.api.models.response.StatsResponse;
 import calculator.countsOfP.models.player.Attribute;
 import calculator.countsOfP.models.player.Stat;
-import calculator.countsOfP.models.player.StatIncrease;
+import calculator.countsOfP.models.player.StatIncreaseAtt;
 import calculator.countsOfP.models.player.dao.AttributeDAO;
 import calculator.countsOfP.models.player.dao.LevelPDAO;
 import calculator.countsOfP.models.player.dao.StatDAO;
@@ -41,13 +41,13 @@ public class PlayerService {
     public Map<Long, Double> increaseAttribute(Long attributeId, Integer initialValue, Integer finalValue){
         //Get the List of increased stats
         Attribute attribute = attributeDAO.findById(attributeId).get();
-        List<StatIncrease> list = statIncreaseDAO.findByAttributeAndAttributeValueBetween(attribute, initialValue, finalValue);
+        List<StatIncreaseAtt> list = statIncreaseDAO.findByAttributeAndAttributeValueBetween(attribute, initialValue, finalValue);
 
         //Get only the start and the end of each stat increase
         Map<Long, Double> increasedStats = new HashMap<>();
         Long statId = 0L;
         Double initialIncrease = 0.00;
-        for (StatIncrease row:list){
+        for (StatIncreaseAtt row:list){
             if (row.getAttributeValue() == initialValue){
                 statId = row.getStat().getId();
                 initialIncrease = row.getIncrease();
