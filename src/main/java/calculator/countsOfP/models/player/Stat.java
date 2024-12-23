@@ -1,6 +1,8 @@
 package calculator.countsOfP.models.player;
 
 
+import calculator.countsOfP.models.build.StatIncreaseAmu;
+import calculator.countsOfP.models.build.StatIncreaseArmor;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -21,7 +23,13 @@ public class Stat {
     private String spritePath;
 
     @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<StatIncrease> statIncreases = new ArrayList<>();
+    private List<StatIncreaseAtt> statIncreaseAtts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StatIncreaseAmu> statIncreaseAmus = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<StatIncreaseArmor> statIncreaseArmors = new ArrayList<>();
 
     @Column(name = "base_value", columnDefinition = "Decimal(5,2)")
     private Double baseValue;
@@ -50,19 +58,35 @@ public class Stat {
         this.spritePath = spritePath;
     }
 
-    public List<StatIncrease> getStatIncreases() {
-        return statIncreases;
-    }
-
-    public void setStatIncreases(List<StatIncrease> statIncreases) {
-        this.statIncreases = statIncreases;
-    }
-
     public Double getBaseValue() {
         return baseValue;
     }
 
     public void setBaseValue(Double baseValue) {
         this.baseValue = baseValue;
+    }
+
+    public List<StatIncreaseAtt> getStatIncreaseAtts() {
+        return statIncreaseAtts;
+    }
+
+    public void setStatIncreaseAtts(List<StatIncreaseAtt> statIncreaseAtts) {
+        this.statIncreaseAtts = statIncreaseAtts;
+    }
+
+    public List<StatIncreaseAmu> getStatIncreaseAmus() {
+        return statIncreaseAmus;
+    }
+
+    public void setStatIncreaseAmus(List<StatIncreaseAmu> statIncreaseAmus) {
+        this.statIncreaseAmus = statIncreaseAmus;
+    }
+
+    public List<StatIncreaseArmor> getStatIncreaseArmors() {
+        return statIncreaseArmors;
+    }
+
+    public void setStatIncreaseArmors(List<StatIncreaseArmor> statIncreaseArmors) {
+        this.statIncreaseArmors = statIncreaseArmors;
     }
 }

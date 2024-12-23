@@ -1,5 +1,6 @@
 package calculator.countsOfP.models.player;
 
+import calculator.countsOfP.models.build.AttributeIncreaseAmu;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -22,7 +23,11 @@ public class Attribute {
 
     @JsonIgnore
     @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<StatIncrease> statIncreases = new ArrayList<>();
+    private List<StatIncreaseAtt> statIncreaseAtts = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<AttributeIncreaseAmu> attributeIncreaseAmus = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -48,11 +53,19 @@ public class Attribute {
         this.spritePath = spritePath;
     }
 
-    public List<StatIncrease> getStatIncreases() {
-        return statIncreases;
+    public List<StatIncreaseAtt> getStatIncreaseAtts() {
+        return statIncreaseAtts;
     }
 
-    public void setStatIncreases(List<StatIncrease> statIncreases) {
-        this.statIncreases = statIncreases;
+    public void setStatIncreaseAtts(List<StatIncreaseAtt> statIncreaseAtts) {
+        this.statIncreaseAtts = statIncreaseAtts;
+    }
+
+    public List<AttributeIncreaseAmu> getAttributeIncreaseAmus() {
+        return attributeIncreaseAmus;
+    }
+
+    public void setAttributeIncreaseAmus(List<AttributeIncreaseAmu> attributeIncreaseAmus) {
+        this.attributeIncreaseAmus = attributeIncreaseAmus;
     }
 }

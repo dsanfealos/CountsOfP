@@ -47,7 +47,13 @@ public class PlayerServiceTest {
         AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10);
         AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15);
 
+
         StatsResponse response = playerService.simulateStats(initialBody, finalBody);
-        Assertions.assertEquals(response, 0);
+        Map<String, Double> stats = Map.of();
+        StatsResponse reference = new StatsResponse(38L, 15, 20, 20, 20, 20, 15, stats, 39449L);
+        Assertions.assertEquals(response.getLevel(), reference.getLevel());
+        Assertions.assertEquals(response.getErgoCost(), reference.getErgoCost());
+        Assertions.assertEquals(response.getMotivity(), reference.getMotivity());
+        Assertions.assertEquals(response.getStats(), reference.getStats());
     }
 }

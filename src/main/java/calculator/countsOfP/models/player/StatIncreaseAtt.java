@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "stat_increase")
-public class StatIncrease {
+public class StatIncreaseAtt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

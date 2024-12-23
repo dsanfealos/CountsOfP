@@ -22,6 +22,22 @@ public class StatsResponse {
 
     private Long ergoCost;
 
+    public StatsResponse() {
+    }
+
+    public StatsResponse(Long level, Integer vitality, Integer vigor, Integer capacity, Integer motivity, Integer technique,
+                         Integer advance, Map<String, Double> stats, Long ergoCost) {
+        this.level = level;
+        this.vitality = vitality;
+        this.vigor = vigor;
+        this.capacity = capacity;
+        this.motivity = motivity;
+        this.technique = technique;
+        this.advance = advance;
+        this.stats = stats;
+        this.ergoCost = ergoCost;
+    }
+
     public Long getLevel() {
         return level;
     }
