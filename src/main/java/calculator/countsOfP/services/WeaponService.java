@@ -8,9 +8,11 @@ import calculator.countsOfP.models.dao.POrganDAO;
 import calculator.countsOfP.models.weapon.Blade;
 import calculator.countsOfP.models.weapon.Handle;
 import calculator.countsOfP.models.weapon.StatsWeaponS;
+import calculator.countsOfP.models.weapon.WeaponUpgradeS;
 import calculator.countsOfP.models.weapon.dao.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -78,5 +80,22 @@ public class WeaponService {
             cost += moduleQuantity * pOrganDAO.findById(Long.valueOf(level)).get().getQuartzs();
         }
         return cost;
+    }
+
+    public List<StatsWeaponS> getAllWeaponsSWithLevels(){
+        return statsWeaponSDAO.findAll();
+    }
+
+    public List<StatsWeaponS> getAllWeaponsS(){
+        WeaponUpgradeS currentLevel = weaponUpgradeSDAO.findById(1L).get();
+        return statsWeaponSDAO.findByCurrentLevel(currentLevel);
+    }
+
+    public StatsWeaponS getWeaponS(Long id){
+        return statsWeaponSDAO.findById(id).get();
+    }
+
+    public List<StatsWeaponS> searchWeaponS(String keyword){
+        return statsWeaponSDAO.search(keyword);
     }
 }

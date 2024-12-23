@@ -38,7 +38,7 @@ public class StatsWeaponS {
     @Column(name = "elemental_attack")
     private Integer elementalAttack;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "current_level", nullable = false)
     private WeaponUpgradeS currentLevel;
