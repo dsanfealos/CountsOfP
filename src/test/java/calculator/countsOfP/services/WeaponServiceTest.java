@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SpringBootTest
@@ -38,10 +39,13 @@ public class WeaponServiceTest {
     @Transactional
     public void testUpgradeLevelS(){
         StatsWeaponSResponse response = weaponService.upgradeLevelS(new StatsWeaponSBody("Etiquette", 1L, 3L));
-        StatsWeaponSResponse reference = new StatsWeaponSResponse(430L, statsWeaponSDAO.findById(9L).get());
+        Map<String, Integer> materials = new LinkedHashMap<>();
+        materials.put("Dark moon moonstone of the covenant", 3);
+        StatsWeaponSResponse reference = new StatsWeaponSResponse(430L, materials, statsWeaponSDAO.findById(9L).get());
         Assertions.assertEquals(response.getErgoCost(), reference.getErgoCost());
         Assertions.assertEquals(response.getStats().getId(), reference.getStats().getId());
         Assertions.assertEquals(response.getStats().getPhysicalAttack(), reference.getStats().getPhysicalAttack());
+        Assertions.assertEquals(response.getMaterials(), reference.getMaterials());
     }
 
     @Test
@@ -49,9 +53,12 @@ public class WeaponServiceTest {
     public void testUpgradeLevelN(){
         Handle handle = handleDAO.findById(4L).get();
         Blade blade = bladeDAO.findById(6L).get();
-        StatsWeaponNResponse response = weaponService.upgradeLevelN(new StatsWeaponNBody("Puppet's saber blade", 2L, 6L, handle));
+        StatsWeaponNResponse response = weaponService.upgradeLevelN(new StatsWeaponNBody("Puppet's saber blade", 2L, 6L, 4L));
         String weaponName = "Puppet's saber blade" + " | " + "Fire axe handle";
-        StatsWeaponNResponse reference = new StatsWeaponNResponse(weaponName, 1240L, 9.9, 168, 'C',
+        Map<String, Integer> materials = new LinkedHashMap<>();
+        materials.put("Hidden moonstone", 6);
+        materials.put("Crescent moonstone", 3);
+        StatsWeaponNResponse reference = new StatsWeaponNResponse(weaponName, 1240L, materials, 9.9, 168, 'C',
                 'C', '-', 168, 0, blade, handle);
         Assertions.assertEquals(response.getName(), reference.getName());
         Assertions.assertEquals(response.getErgoCost(), reference.getErgoCost());
@@ -59,6 +66,7 @@ public class WeaponServiceTest {
         Assertions.assertEquals(response.getHandle().getId(), reference.getHandle().getId());
         Assertions.assertEquals(response.getBlade().getId(), reference.getBlade().getId());
         Assertions.assertEquals(response.getWeight(), reference.getWeight());
+        Assertions.assertEquals(response.getMaterials(), reference.getMaterials());
         Assertions.assertEquals(response.getPhysicalAttack(), reference.getPhysicalAttack());
         Assertions.assertEquals(response.getElementalAttack(), reference.getElementalAttack());
     }
