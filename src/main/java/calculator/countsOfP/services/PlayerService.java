@@ -62,7 +62,6 @@ public class PlayerService {
     }
 
     public StatsResponse simulateStats(AttributesBody initialBody, AttributesBody finalBody){
-        //Todo Include amulets' effects
         StatsResponse response = new StatsResponse();
         response.setErgoCost(costUpgradeLevelP(initialBody.getLevel(), finalBody.getLevel()));
 
@@ -126,7 +125,7 @@ public class PlayerService {
     }
 
     public Map<String, Double> nameStatsMap(Map<Long, Double> stats){
-        Map<String, Double> namedStats = new HashMap<>();
+        Map<String, Double> namedStats = new LinkedHashMap<>();
         for (Long id: stats.keySet()){
             namedStats.put(statDAO.findById(id).get().getName(), stats.get(id));
         }
