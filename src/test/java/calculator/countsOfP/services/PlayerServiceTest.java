@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Map.entry;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PlayerServiceTest {
@@ -37,8 +39,8 @@ public class PlayerServiceTest {
             statIds.add(key);
             increases.add(listOfStats.get(key));
         }
-        Assertions.assertEquals(statIds, List.of(1L, 4L, 5L, 7L));
-        Assertions.assertEquals(increases, List.of(168.0, 44.0, 16.0, 9.0));
+        Assertions.assertEquals(statIds, List.of(1L, 4L, 5L, 8L, 11L, 14L));
+        Assertions.assertEquals(increases, List.of(168.0, 44.0, 16.0, 9.0, 9.0, 9.0));
     }
 
     @Test
@@ -49,7 +51,15 @@ public class PlayerServiceTest {
 
 
         StatsResponse response = playerService.simulateStats(initialBody, finalBody);
-        Map<String, Double> stats = Map.of();
+        Map<String, Double> stats = Map.ofEntries(
+                entry("Health", 396.0), entry("Stamina", 158.0),
+                entry("Legion", 246.0), entry("Guard Regain", 84.0),
+                entry("Physical Def", 95.0), entry("Fire Def", 84.0),
+                entry("Fire Res", 104.0), entry("Electric Def", 84.0),
+                entry("Electric Res", 104.0), entry("Acid Def", 84.0),
+                entry("Acid Res", 104.0), entry("Disruption", 238.0),
+                entry("Shock", 73.0), entry("Break", 73.0),
+                entry("Weight", 102.7));
         StatsResponse reference = new StatsResponse(38L, 15, 20, 20, 20, 20, 15, stats, 39449L);
         Assertions.assertEquals(response.getLevel(), reference.getLevel());
         Assertions.assertEquals(response.getErgoCost(), reference.getErgoCost());
