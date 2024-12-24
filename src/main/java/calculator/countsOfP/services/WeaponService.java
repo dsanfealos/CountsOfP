@@ -5,13 +5,11 @@ import calculator.countsOfP.api.models.body.StatsWeaponSBody;
 import calculator.countsOfP.api.models.response.StatsWeaponNResponse;
 import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
 import calculator.countsOfP.models.dao.POrganDAO;
-import calculator.countsOfP.models.weapon.Blade;
-import calculator.countsOfP.models.weapon.Handle;
-import calculator.countsOfP.models.weapon.StatsWeaponS;
-import calculator.countsOfP.models.weapon.WeaponUpgradeS;
+import calculator.countsOfP.models.weapon.*;
 import calculator.countsOfP.models.weapon.dao.*;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,10 +39,20 @@ public class WeaponService {
         StatsWeaponS stats = statsWeaponSDAO.findByNameAndCurrentLevel(body.getWeaponName(),
                 weaponUpgradeSDAO.findById(finalLevel).get());
         Long ergoCost = 0L;
+        Map<String, Integer> materials = new LinkedHashMap<>();
         for (Long level = initialLevel + 1; level <= finalLevel; level++){
-            ergoCost += weaponUpgradeSDAO.findById(level).get().getErgo();
+            WeaponUpgradeS upgradeLevel = weaponUpgradeSDAO.findById(level).get();
+            ergoCost += upgradeLevel.getErgo();
+            String materialName = upgradeLevel.getMaterial();
+            Integer quantity = upgradeLevel.getQuantity();
+            if (materials.containsKey(materialName)){
+                Integer result = quantity + materials.get(materialName);
+                materials.replace(materialName, materials.get(materialName), result);
+            }else {
+                materials.put(materialName, quantity);
+            }
         }
-        return new StatsWeaponSResponse(ergoCost, stats);
+        return new StatsWeaponSResponse(ergoCost, materials, stats);
     }
 
     public StatsWeaponNResponse upgradeLevelN(StatsWeaponNBody body){
@@ -53,33 +61,26 @@ public class WeaponService {
         Blade blade = bladeDAO.findByNameAndCurrentLevel(body.getBladeName(),
                 weaponUpgradeNDAO.findById(finalLevel).get());
         Long ergoCost = 0L;
+        Map<String, Integer> materials = new LinkedHashMap<>();
         for (Long level = initialLevel + 1; level <= finalLevel; level++){
-            ergoCost += weaponUpgradeNDAO.findById(level).get().getErgo();
+            WeaponUpgradeN upgradeLevel = weaponUpgradeNDAO.findById(level).get();
+            ergoCost += upgradeLevel.getErgo();
+            String materialName = upgradeLevel.getMaterial();
+            Integer quantity = upgradeLevel.getQuantity();
+            if (materials.containsKey(materialName)){
+                Integer result = quantity + materials.get(materialName);
+                materials.replace(materialName, materials.get(materialName), result);
+            }else {
+                materials.put(materialName, quantity);
+            }
+
         }
-        Handle handle = body.getHandle();
+        Handle handle = handleDAO.findById(body.getHandleId()).get();
         Double weight = blade.getWeight() + handle.getWeight();
         String weaponName = body.getBladeName() + " | " + handle.getName();
-        StatsWeaponNResponse response = new StatsWeaponNResponse(weaponName, ergoCost,weight, blade.getTotalAttack(), handle.getMotivity(),
+        StatsWeaponNResponse response = new StatsWeaponNResponse(weaponName, ergoCost, materials, weight, blade.getTotalAttack(), handle.getMotivity(),
                 handle.getTechnique(), handle.getAdvance(), blade.getPhysicalAttack(), blade.getElementalAttack(), blade, handle);
         return response;
-    }
-
-    public Integer costUpgradeArm(Integer initialLevel, Integer finalLevel){
-        Map<Integer, Integer> costs = Map.of(0,0,1,1,2,2,3,3);
-        Integer components = 0;
-        for (int index = initialLevel + 1; index <= finalLevel; index++){
-            components += costs.get(index);
-        }
-        return components;
-    }
-
-    public Integer costQuartzTotal(Map<Integer, Integer> modules){
-        Integer cost = 0;
-        for (Integer level:modules.keySet()){
-            Integer moduleQuantity = modules.get(level);
-            cost += moduleQuantity * pOrganDAO.findById(Long.valueOf(level)).get().getQuartzs();
-        }
-        return cost;
     }
 
     public List<StatsWeaponS> getAllWeaponsSWithLevels(){
@@ -97,5 +98,34 @@ public class WeaponService {
 
     public List<StatsWeaponS> searchWeaponS(String keyword){
         return statsWeaponSDAO.search(keyword);
+    }
+
+    public List<Blade> getAllBladesWithLevels(){
+        return bladeDAO.findAll();
+    }
+
+    public List<Blade> getAllBlades(){
+        WeaponUpgradeN currenteLevel = weaponUpgradeNDAO.findById(1L).get();
+        return bladeDAO.findByCurrentLevel(currenteLevel);
+    }
+
+    public Blade getBlade(Long id){
+        return bladeDAO.findById(id).get();
+    }
+
+    public List<Blade> searchBlade(String keyword){
+        return bladeDAO.search(keyword);
+    }
+
+    public List<Handle> getAllHandles(){
+        return handleDAO.findAll();
+    }
+
+    public Handle getHandle(Long id){
+        return handleDAO.findById(id).get();
+    }
+
+    public List<Handle> searchHandle(String keyword){
+        return handleDAO.search(keyword);
     }
 }

@@ -1,5 +1,6 @@
 package calculator.countsOfP.api.controllers;
 
+import calculator.countsOfP.api.models.body.StatsWeaponNBody;
 import calculator.countsOfP.api.models.body.StatsWeaponSBody;
 import calculator.countsOfP.api.models.response.StatsWeaponNResponse;
 import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/weapon")
@@ -54,42 +54,41 @@ public class WeaponController {
 
     @GetMapping("/blade/{bladeId}")
     public Blade getBlade (@PathVariable Long bladeId){
-
-        return null;
+        return weaponService.getBlade(bladeId);
     }
 
     @GetMapping("/handle/{handleId}")
     public Handle getHandle(@PathVariable Long handleId){
-        return null;
+        return weaponService.getHandle(handleId);
     }
 
     @GetMapping("/blade/all")
     public List<Blade> getBladeWithLevelsList (){
-        return null;
+        return weaponService.getAllBladesWithLevels();
     }
 
     @GetMapping("/blade")
     public List<Blade> getBladeList (){
-        return null;
+        return weaponService.getAllBlades();
     }
 
     @GetMapping("/blade/search")
     public List<Blade> searchBlade(@RequestParam String keyword){
-        return null;
+        return weaponService.searchBlade(keyword);
     }
 
     @GetMapping("/handle")
     public List<Handle> getHandleList (){
-        return null;
+        return weaponService.getAllHandles();
     }
 
     @GetMapping("/handle/search")
     public List<Handle> searchHandle(@RequestParam String keyword){
-        return null;
+        return weaponService.searchHandle(keyword);
     }
 
     @PostMapping("/N/upgrade")
-    public ResponseEntity<StatsWeaponNResponse> upgradeWeaponN(){
-        return null;
+    public ResponseEntity<StatsWeaponNResponse> upgradeWeaponN(@RequestBody StatsWeaponNBody body){
+        return ResponseEntity.ok(weaponService.upgradeLevelN(body));
     }
 }
