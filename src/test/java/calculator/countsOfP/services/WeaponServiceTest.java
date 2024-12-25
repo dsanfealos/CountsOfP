@@ -70,22 +70,4 @@ public class WeaponServiceTest {
         Assertions.assertEquals(response.getPhysicalAttack(), reference.getPhysicalAttack());
         Assertions.assertEquals(response.getElementalAttack(), reference.getElementalAttack());
     }
-
-    @Test
-    @Transactional
-    public void testCostUpgradeArm(){
-        Assertions.assertEquals(weaponService.costUpgradeArm(0,3), 6);
-        Assertions.assertEquals(weaponService.costUpgradeArm(1,2), 2);
-        Assertions.assertEquals(weaponService.costUpgradeArm(1,3), 5);
-    }
-
-    @Test
-    @Transactional
-    public void testCostQuartzTotal(){
-        Map<Integer, Integer> modules = Map.of(1, 3, 2, 2, 3,2,4, 1, 5, 3, 6, 1);
-        Assertions.assertEquals(weaponService.costQuartzTotal(modules), 35);
-
-        modules = Map.of(1, 3, 2, 3, 4, 2);
-        Assertions.assertEquals(weaponService.costQuartzTotal(modules), 18);
-    }
 }

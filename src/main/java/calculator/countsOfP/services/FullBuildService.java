@@ -1,5 +1,6 @@
 package calculator.countsOfP.services;
 
+import calculator.countsOfP.api.models.response.POrganResponse;
 import calculator.countsOfP.exceptions.NotEnoughModulesException;
 import calculator.countsOfP.models.dao.POrganDAO;
 import org.springframework.stereotype.Service;
@@ -24,18 +25,19 @@ public class FullBuildService {
         return components;
     }
 
-    public Integer costQuartzTotal(Map<Integer, Integer> modules){
+    public POrganResponse costQuartzTotal(Map<Integer, Integer> modules){
         Integer cost = 0;
         Integer totalModules = 0;
         for (Integer level:modules.keySet()){
             Integer moduleQuantity = modules.get(level);
-            totalModules += moduleQuantity;
             Integer minimumTotalModules = 2*(level-1);
-//            if (totalModules<minimumTotalModules){
-//                throw new NotEnoughModulesException("It is needed at least 2 modules for each P Organ level.");
-//            }
+            int nextLevel = level + 1;
+            if (totalModules<minimumTotalModules){
+                throw new NotEnoughModulesException();
+            }
+            totalModules += moduleQuantity;
             cost += moduleQuantity * pOrganDAO.findById(Long.valueOf(level)).get().getQuartzs();
         }
-        return cost;
+        return new POrganResponse(cost);
     }
 }

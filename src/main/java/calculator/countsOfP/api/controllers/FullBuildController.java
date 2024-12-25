@@ -1,6 +1,6 @@
 package calculator.countsOfP.api.controllers;
 
-import calculator.countsOfP.api.models.response.POrganResponse;
+import calculator.countsOfP.exceptions.ErrorResponse;
 import calculator.countsOfP.exceptions.NotEnoughModulesException;
 import calculator.countsOfP.services.FullBuildService;
 import org.springframework.http.HttpStatus;
@@ -27,10 +27,25 @@ public class FullBuildController {
     }
 
     @PostMapping("/p_organ")
-    public POrganResponse costQuartz(@RequestBody Map<Integer, Integer> body) {
-        //Todo Create exception if for n lvls, there are less than 2n modules.
-        //Todo make it show at API response
-        POrganResponse response = new POrganResponse(buildService.costQuartzTotal(body));
-        return response;
+    public ResponseEntity<Object> costQuartz(@RequestBody Map<Integer, Integer> body) {
+
+        try{
+            return ResponseEntity.ok(buildService.costQuartzTotal(body));
+        } catch(NotEnoughModulesException e){
+            int totalModules = 0;
+            String errorResponse = "";
+            for (Integer level:body.keySet()){
+                int moduleQuantity = body.get(level);
+                int minimumTotalModules = 2*(level-1);
+                if (totalModules<minimumTotalModules){
+                    errorResponse = "It is needed at least 2 modules per each P Organ level. You need at least " + minimumTotalModules +
+                            " modules to unlock level " + level + ".";
+                    break;
+                }
+                totalModules += moduleQuantity;
+            }
+            String path = "/build/p_organ";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST, errorResponse, path));
+        }
     }
 }
