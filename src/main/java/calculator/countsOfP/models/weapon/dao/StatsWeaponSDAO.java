@@ -10,6 +10,7 @@ import java.util.List;
 public interface StatsWeaponSDAO extends ListCrudRepository<StatsWeaponS, Long> {
     StatsWeaponS findByNameAndCurrentLevel(String name, WeaponUpgradeS currentLevel);
     List<StatsWeaponS> findByCurrentLevel(WeaponUpgradeS currentLevel);
+    List<StatsWeaponS> findByname(String name);
 
     @Query("SELECT u FROM StatsWeaponS u WHERE u.name LIKE %?1%")
     List<StatsWeaponS> search(String keyword);
