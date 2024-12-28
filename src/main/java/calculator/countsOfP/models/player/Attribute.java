@@ -1,6 +1,7 @@
 package calculator.countsOfP.models.player;
 
 import calculator.countsOfP.models.build.AttributeIncreaseAmu;
+import calculator.countsOfP.models.weapon.Scaling;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -28,6 +29,10 @@ public class Attribute {
     @JsonIgnore
     @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<AttributeIncreaseAmu> attributeIncreaseAmus = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Scaling> scalings = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -67,5 +72,13 @@ public class Attribute {
 
     public void setAttributeIncreaseAmus(List<AttributeIncreaseAmu> attributeIncreaseAmus) {
         this.attributeIncreaseAmus = attributeIncreaseAmus;
+    }
+
+    public List<Scaling> getScalings() {
+        return scalings;
+    }
+
+    public void setScalings(List<Scaling> scalings) {
+        this.scalings = scalings;
     }
 }

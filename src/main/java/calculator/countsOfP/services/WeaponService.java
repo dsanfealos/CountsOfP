@@ -2,8 +2,10 @@ package calculator.countsOfP.services;
 
 import calculator.countsOfP.api.models.body.StatsWeaponNBody;
 import calculator.countsOfP.api.models.body.StatsWeaponSBody;
+import calculator.countsOfP.api.models.body.TotalAttackBody;
 import calculator.countsOfP.api.models.response.StatsWeaponNResponse;
 import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
+import calculator.countsOfP.api.models.response.TotalAttackResponse;
 import calculator.countsOfP.models.dao.POrganDAO;
 import calculator.countsOfP.models.weapon.*;
 import calculator.countsOfP.models.weapon.dao.*;
@@ -127,5 +129,36 @@ public class WeaponService {
 
     public List<Handle> searchHandle(String keyword){
         return handleDAO.search(keyword);
+    }
+
+    public TotalAttackResponse calculateAttack(TotalAttackBody body){
+        TotalAttackResponse response = new TotalAttackResponse();
+        StatsWeaponS weaponS = new StatsWeaponS();
+        Blade blade = new Blade();
+        Handle handle = new Handle();
+        Integer basePhysicalAttack = 0;
+        Integer baseElementalAttack = 0;
+        Character motivityScaling = '-';
+        Character techniqueScaling = '-';
+        Character advanceScaling = '-';
+        if (body.getIsWeaponS()){
+            weaponS = statsWeaponSDAO.findById(body.getWeaponSId()).get();
+            baseElementalAttack = weaponS.getElementalAttack();
+            basePhysicalAttack = weaponS.getPhysicalAttack();
+            motivityScaling = weaponS.getMotivity();
+            techniqueScaling = weaponS.getTechnique();
+            advanceScaling = weaponS.getAdvance();
+        }else{
+            blade = bladeDAO.findById(body.getBladeId()).get();
+            handle = handleDAO.findById(body.getHandleId()).get();
+            baseElementalAttack = blade.getElementalAttack();
+            basePhysicalAttack = blade.getPhysicalAttack();
+            motivityScaling = handle.getMotivity();
+            techniqueScaling = handle.getTechnique();
+            advanceScaling = handle.getAdvance();
+        }
+        Map<Character, Double> scaling = Map.of('S', 1.20, 'A', 1.00, 'B', 0.80, 'C', 0.60, 'D', 0.40, '-', 0.00);
+        
+        return null;
     }
 }
