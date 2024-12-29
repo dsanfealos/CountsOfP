@@ -7,6 +7,8 @@ import calculator.countsOfP.api.models.response.StatsWeaponNResponse;
 import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
 import calculator.countsOfP.api.models.response.TotalAttackResponse;
 import calculator.countsOfP.models.dao.POrganDAO;
+import calculator.countsOfP.models.player.Attribute;
+import calculator.countsOfP.models.player.dao.AttributeDAO;
 import calculator.countsOfP.models.weapon.*;
 import calculator.countsOfP.models.weapon.dao.*;
 import org.springframework.stereotype.Service;
@@ -24,15 +26,19 @@ public class WeaponService {
     private HandleDAO handleDAO;
     private BladeDAO bladeDAO;
     private POrganDAO pOrganDAO;
+    private ScalingDAO scalingDAO;
+    private AttributeDAO attributeDAO;
 
 
-    public WeaponService(StatsWeaponSDAO statsWeaponSDAO, WeaponUpgradeSDAO weaponUpgradeSDAO, WeaponUpgradeNDAO weaponUpgradeNDAO, HandleDAO handleDAO, BladeDAO bladeDAO, POrganDAO pOrganDAO) {
+    public WeaponService(StatsWeaponSDAO statsWeaponSDAO, WeaponUpgradeSDAO weaponUpgradeSDAO, WeaponUpgradeNDAO weaponUpgradeNDAO, HandleDAO handleDAO, BladeDAO bladeDAO, POrganDAO pOrganDAO, ScalingDAO scalingDAO, AttributeDAO attributeDAO) {
         this.statsWeaponSDAO = statsWeaponSDAO;
         this.weaponUpgradeSDAO = weaponUpgradeSDAO;
         this.weaponUpgradeNDAO = weaponUpgradeNDAO;
         this.handleDAO = handleDAO;
         this.bladeDAO = bladeDAO;
         this.pOrganDAO = pOrganDAO;
+        this.scalingDAO = scalingDAO;
+        this.attributeDAO = attributeDAO;
     }
 
     public StatsWeaponSResponse upgradeLevelS(StatsWeaponSBody body){
@@ -132,17 +138,18 @@ public class WeaponService {
     }
 
     public TotalAttackResponse calculateAttack(TotalAttackBody body){
-        TotalAttackResponse response = new TotalAttackResponse();
-        StatsWeaponS weaponS = new StatsWeaponS();
-        Blade blade = new Blade();
-        Handle handle = new Handle();
-        Integer basePhysicalAttack = 0;
-        Integer baseElementalAttack = 0;
-        Character motivityScaling = '-';
-        Character techniqueScaling = '-';
-        Character advanceScaling = '-';
+        String name;
+        StatsWeaponS weaponS ;
+        Blade blade;
+        Handle handle;
+        Integer basePhysicalAttack;
+        Integer baseElementalAttack;
+        Character motivityScaling;
+        Character techniqueScaling;
+        Character advanceScaling;
         if (body.getIsWeaponS()){
             weaponS = statsWeaponSDAO.findById(body.getWeaponSId()).get();
+            name = weaponS.getName();
             baseElementalAttack = weaponS.getElementalAttack();
             basePhysicalAttack = weaponS.getPhysicalAttack();
             motivityScaling = weaponS.getMotivity();
@@ -151,14 +158,30 @@ public class WeaponService {
         }else{
             blade = bladeDAO.findById(body.getBladeId()).get();
             handle = handleDAO.findById(body.getHandleId()).get();
+            name = blade.getName() + " | " + handle.getName();
             baseElementalAttack = blade.getElementalAttack();
             basePhysicalAttack = blade.getPhysicalAttack();
             motivityScaling = handle.getMotivity();
             techniqueScaling = handle.getTechnique();
             advanceScaling = handle.getAdvance();
         }
-        Map<Character, Double> scaling = Map.of('S', 1.20, 'A', 1.00, 'B', 0.80, 'C', 0.60, 'D', 0.40, '-', 0.00);
-        
-        return null;
+
+        Integer bonusPhysicalAttack =  calculateBonusAttack(4L, motivityScaling, body.getMotivity(), basePhysicalAttack) +
+                calculateBonusAttack(5L, techniqueScaling, body.getTechnique(), basePhysicalAttack);
+        Integer bonusElementalAttack =  calculateBonusAttack(6L, advanceScaling, body.getAdvance(), baseElementalAttack);
+        Integer totalAttack = baseElementalAttack + basePhysicalAttack + bonusPhysicalAttack + bonusElementalAttack;
+
+        return new TotalAttackResponse(name,basePhysicalAttack, baseElementalAttack, bonusPhysicalAttack, bonusElementalAttack, totalAttack);
     }
+
+    public Integer calculateBonusAttack(Long attributeId, Character scalingLetter, Integer attributeValue, Integer baseAttack){
+        double modifier = 0.00;
+        if (scalingLetter != '-'){
+            modifier = scalingDAO.findByAttributeAndLetterAndLevel(
+                    attributeDAO.findById(attributeId).get(), scalingLetter, attributeValue).getBonusAtk();
+        }
+        double bonusAttack = baseAttack * modifier;
+        return (int) bonusAttack;
+    }
+
 }

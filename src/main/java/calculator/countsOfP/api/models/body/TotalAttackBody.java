@@ -10,8 +10,6 @@ public class TotalAttackBody {
 
     private Long handleId;
 
-    private Boolean hasAttackAmulet;
-
     private Integer motivity;
 
     private Integer technique;
@@ -21,12 +19,11 @@ public class TotalAttackBody {
     public TotalAttackBody() {
     }
 
-    public TotalAttackBody(Boolean isWeaponS, Long weaponSId, Long bladeId, Long handleId, Boolean hasAttackAmulet, Integer motivity, Integer technique, Integer advance) {
+    public TotalAttackBody(Boolean isWeaponS, Long weaponSId, Long bladeId, Long handleId, Integer motivity, Integer technique, Integer advance) {
         this.isWeaponS = isWeaponS;
         this.weaponSId = weaponSId;
         this.bladeId = bladeId;
         this.handleId = handleId;
-        this.hasAttackAmulet = hasAttackAmulet;
         this.motivity = motivity;
         this.technique = technique;
         this.advance = advance;
@@ -62,14 +59,6 @@ public class TotalAttackBody {
 
     public void setHandleId(Long handleId) {
         this.handleId = handleId;
-    }
-
-    public Boolean getHasAttackAmulet() {
-        return hasAttackAmulet;
-    }
-
-    public void setHasAttackAmulet(Boolean hasAttackAmulet) {
-        this.hasAttackAmulet = hasAttackAmulet;
     }
 
     public Integer getMotivity() {
