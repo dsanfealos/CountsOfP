@@ -1,6 +1,8 @@
 package calculator.countsOfP.services;
 
-import calculator.countsOfP.api.models.response.POrganResponse;
+import calculator.countsOfP.api.models.body.FullBuildBody;
+import calculator.countsOfP.api.models.body.TotalAttackBody;
+import calculator.countsOfP.api.models.response.*;
 import calculator.countsOfP.exceptions.NotEnoughModulesException;
 import calculator.countsOfP.models.dao.POrganDAO;
 import org.springframework.stereotype.Service;
@@ -12,8 +14,14 @@ public class FullBuildService {
 
     private POrganDAO pOrganDAO;
 
-    public FullBuildService(POrganDAO pOrganDAO) {
+    private PlayerService playerService;
+
+    private WeaponService weaponService;
+
+    public FullBuildService(POrganDAO pOrganDAO, PlayerService playerService, WeaponService weaponService) {
         this.pOrganDAO = pOrganDAO;
+        this.playerService = playerService;
+        this.weaponService = weaponService;
     }
 
     public Integer costUpgradeArm(Integer initialLevel, Integer finalLevel){
@@ -39,5 +47,25 @@ public class FullBuildService {
             cost += moduleQuantity * pOrganDAO.findById(Long.valueOf(level)).get().getQuartzs();
         }
         return new POrganResponse(cost);
+    }
+
+    public FullBuildResponse build(FullBuildBody body){
+        StatsResponse stats = playerService.simulateStats(body.getInitialAttributesBody(), body.getFinalAttributesBody());
+        StatsWeaponNResponse weaponN = null;
+        StatsWeaponSResponse weaponS = null;
+        TotalAttackBody attackBody;
+        TotalAttackResponse attack;
+        if (body.getIsWeaponS()){
+            weaponS = weaponService.upgradeLevelS(body.getStatsWeaponSBody());
+            attackBody = new TotalAttackBody(true, weaponS.getStats().getId(),
+                    null, null, stats.getMotivity(), stats.getTechnique(), stats.getAdvance());
+        } else{
+            weaponN = weaponService.upgradeLevelN(body.getStatsWeaponNBody());
+            attackBody = new TotalAttackBody(false, null,
+                    weaponN.getBlade().getId(), weaponN.getHandle().getId(), stats.getMotivity(), stats.getTechnique(), stats.getAdvance());
+
+        }
+        attack = weaponService.calculateAttack(attackBody);
+        return new FullBuildResponse(stats, attack, body.getIsWeaponS(), weaponN, weaponS);
     }
 }

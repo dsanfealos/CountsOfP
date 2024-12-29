@@ -2,8 +2,10 @@ package calculator.countsOfP.services;
 
 import calculator.countsOfP.api.models.body.StatsWeaponNBody;
 import calculator.countsOfP.api.models.body.StatsWeaponSBody;
+import calculator.countsOfP.api.models.body.TotalAttackBody;
 import calculator.countsOfP.api.models.response.StatsWeaponNResponse;
 import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
+import calculator.countsOfP.api.models.response.TotalAttackResponse;
 import calculator.countsOfP.models.weapon.Blade;
 import calculator.countsOfP.models.weapon.Handle;
 import calculator.countsOfP.models.weapon.dao.BladeDAO;
@@ -69,5 +71,17 @@ public class WeaponServiceTest {
         Assertions.assertEquals(response.getMaterials(), reference.getMaterials());
         Assertions.assertEquals(response.getPhysicalAttack(), reference.getPhysicalAttack());
         Assertions.assertEquals(response.getElementalAttack(), reference.getElementalAttack());
+    }
+
+    @Test
+    @Transactional
+    public void testTotalAttack(){
+        TotalAttackBody body = new TotalAttackBody(true,1L,null,null, 15,15,6);
+        TotalAttackResponse reference = new TotalAttackResponse("Seven-coil spring sword", 130, 0, 59, 0, 189);
+        TotalAttackResponse response = weaponService.calculateAttack(body);
+        Assertions.assertEquals(response.getWeaponName(), reference.getWeaponName());
+        Assertions.assertEquals(response.getBonusElementalAttack(), reference.getBonusElementalAttack());
+        Assertions.assertEquals(response.getBonusPhysicalAttack(), reference.getBonusPhysicalAttack());
+        Assertions.assertEquals(response.getTotalAttack(), reference.getTotalAttack());
     }
 }

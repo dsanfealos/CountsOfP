@@ -1,5 +1,7 @@
 package calculator.countsOfP.api.controllers;
 
+import calculator.countsOfP.api.models.body.FullBuildBody;
+import calculator.countsOfP.api.models.response.FullBuildResponse;
 import calculator.countsOfP.exceptions.ErrorResponse;
 import calculator.countsOfP.exceptions.NotEnoughModulesException;
 import calculator.countsOfP.services.FullBuildService;
@@ -47,5 +49,10 @@ public class FullBuildController {
             String path = "/build/p_organ";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST, errorResponse, path));
         }
+    }
+
+    @PostMapping("/build")
+    public ResponseEntity<FullBuildResponse> build(FullBuildBody body){
+        return ResponseEntity.ok(buildService.build(body));
     }
 }
