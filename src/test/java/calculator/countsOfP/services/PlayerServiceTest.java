@@ -54,13 +54,13 @@ public class PlayerServiceTest {
 
         StatsResponse response = playerService.simulateStats(initialBody, finalBody);
         Map<String, Double> stats = Map.ofEntries(
-                entry("Health", 396.0), entry("Stamina", 158.0),
-                entry("Legion", 246.0), entry("Guard Regain", 84.0),
-                entry("Physical Def", 95.0), entry("Fire Def", 84.0),
-                entry("Fire Res", 104.0), entry("Electric Def", 84.0),
-                entry("Electric Res", 104.0), entry("Acid Def", 84.0),
-                entry("Acid Res", 104.0), entry("Disruption", 238.0),
-                entry("Shock", 73.0), entry("Break", 73.0),
+                entry("Health", 447.48), entry("Stamina", 181.7),
+                entry("Legion", 252.0), entry("Guard Regain", 84.0),
+                entry("Physical Def", 110.0), entry("Fire Def", 95.0),
+                entry("Fire Res", 117.0), entry("Electric Def", 95.0),
+                entry("Electric Res", 117.0), entry("Acid Def", 95.0),
+                entry("Acid Res", 117.0), entry("Disruption", 251.0),
+                entry("Shock", 75.0), entry("Break", 75.0),
                 entry("Weight", 102.7));
         StatsResponse reference = new StatsResponse(38L, 15, 20, 20, 27, 23, 19, stats, 39449L);
         Assertions.assertEquals(response.getLevel(), reference.getLevel());
