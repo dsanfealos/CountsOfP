@@ -1,5 +1,9 @@
 package calculator.countsOfP.api.models.body;
 
+import calculator.countsOfP.models.build.Amulet;
+
+import java.util.List;
+
 public class AttributesBody {
 
     private Long level;
@@ -16,10 +20,12 @@ public class AttributesBody {
 
     private Integer advance;
 
+    private List<Amulet> amulets;
+
     public AttributesBody() {
     }
 
-    public AttributesBody(Long level, Integer vitality, Integer vigor, Integer capacity, Integer motivity, Integer technique, Integer advance) {
+    public AttributesBody(Long level, Integer vitality, Integer vigor, Integer capacity, Integer motivity, Integer technique, Integer advance, List<Amulet> amulets) {
         this.level = level;
         this.vitality = vitality;
         this.vigor = vigor;
@@ -27,6 +33,7 @@ public class AttributesBody {
         this.motivity = motivity;
         this.technique = technique;
         this.advance = advance;
+        this.amulets = amulets;
     }
 
     public Long getLevel() {
@@ -83,5 +90,13 @@ public class AttributesBody {
 
     public void setAdvance(Integer advance) {
         this.advance = advance;
+    }
+
+    public List<Amulet> getAmulets() {
+        return amulets;
+    }
+
+    public void setAmulets(List<Amulet> amulets) {
+        this.amulets = amulets;
     }
 }

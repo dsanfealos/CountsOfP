@@ -52,7 +52,10 @@ public class FullBuildController {
     }
 
     @PostMapping("/build")
-    public ResponseEntity<FullBuildResponse> build(FullBuildBody body){
+    public ResponseEntity<Object> build(@RequestBody FullBuildBody body){
+        if (body.getInitialAttributesBody().getAmulets().size() > 5 || body.getFinalAttributesBody().getAmulets().size() > 5){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Maximum number of amulets is 5");
+        }
         return ResponseEntity.ok(buildService.build(body));
     }
 }

@@ -4,7 +4,7 @@ import calculator.countsOfP.api.models.body.FullBuildBody;
 import calculator.countsOfP.api.models.body.TotalAttackBody;
 import calculator.countsOfP.api.models.response.*;
 import calculator.countsOfP.exceptions.NotEnoughModulesException;
-import calculator.countsOfP.models.dao.POrganDAO;
+import calculator.countsOfP.models.build.dao.POrganDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
