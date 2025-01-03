@@ -2,6 +2,7 @@ package calculator.countsOfP.services;
 
 import calculator.countsOfP.api.models.body.AttributesBody;
 import calculator.countsOfP.api.models.response.StatsResponse;
+import calculator.countsOfP.models.build.Amulet;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ public class PlayerServiceTest {
 
     @Test
     @Transactional
-    public void testIncreaseAttribute(){
-        Map<Long, Double> listOfStats = playerService.increaseAttribute(1L, 10, 20);
+    public void testIncreaseStatsByAttribute(){
+        Map<Long, Double> listOfStats = playerService.increaseStatsByAttribute(1L, 10, 20);
         List<Long> statIds = new ArrayList<>();
         List<Double> increases = new ArrayList<>();
         for(Long key: listOfStats.keySet()){
@@ -46,8 +47,9 @@ public class PlayerServiceTest {
     @Test
     @Transactional
     public void testSimulateStats(){
-        AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10);
-        AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15);
+        List<Amulet> amulets = List.of(playerService.getAmulet(2L), playerService.getAmulet(4L), playerService.getAmulet(15L), playerService.getAmulet(21L), playerService.getAmulet(24L));
+        AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10, null);
+        AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, amulets);
 
 
         StatsResponse response = playerService.simulateStats(initialBody, finalBody);
@@ -60,7 +62,7 @@ public class PlayerServiceTest {
                 entry("Acid Res", 104.0), entry("Disruption", 238.0),
                 entry("Shock", 73.0), entry("Break", 73.0),
                 entry("Weight", 102.7));
-        StatsResponse reference = new StatsResponse(38L, 15, 20, 20, 20, 20, 15, stats, 39449L);
+        StatsResponse reference = new StatsResponse(38L, 15, 20, 20, 27, 23, 19, stats, 39449L);
         Assertions.assertEquals(response.getLevel(), reference.getLevel());
         Assertions.assertEquals(response.getErgoCost(), reference.getErgoCost());
         Assertions.assertEquals(response.getMotivity(), reference.getMotivity());

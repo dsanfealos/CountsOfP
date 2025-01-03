@@ -36,8 +36,8 @@ public class PlayerControllerTest {
     public void testGetSimulatedStats() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
         Map<String, AttributesBody> body = new LinkedHashMap<>();
-        AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10);
-        AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15);
+        AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10, null);
+        AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, null);
         body.put("initial", initialBody);
         body.put("final", finalBody);
         mvc.perform(post("/player/simulate")
