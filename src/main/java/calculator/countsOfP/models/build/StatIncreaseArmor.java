@@ -12,14 +12,15 @@ public class StatIncreaseArmor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer flatIncrease;
+    @Column(name = "flat_increase", columnDefinition = "Decimal(5,2)")
+    private Double flatIncrease;
 
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "armor_id", nullable = false)
     private Armor armor;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "stat_id", nullable = false)
     private Stat stat;
@@ -32,11 +33,11 @@ public class StatIncreaseArmor {
         this.id = id;
     }
 
-    public Integer getFlatIncrease() {
+    public Double getFlatIncrease() {
         return flatIncrease;
     }
 
-    public void setFlatIncrease(Integer flatIncrease) {
+    public void setFlatIncrease(Double flatIncrease) {
         this.flatIncrease = flatIncrease;
     }
 

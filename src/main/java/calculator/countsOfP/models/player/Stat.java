@@ -3,6 +3,7 @@ package calculator.countsOfP.models.player;
 
 import calculator.countsOfP.models.build.StatIncreaseAmu;
 import calculator.countsOfP.models.build.StatIncreaseArmor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -22,12 +23,15 @@ public class Stat {
     @Column(name = "sprite", length = 300)
     private String spritePath;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StatIncreaseAtt> statIncreaseAtts = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StatIncreaseAmu> statIncreaseAmus = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<StatIncreaseArmor> statIncreaseArmors = new ArrayList<>();
 

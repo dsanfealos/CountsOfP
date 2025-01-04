@@ -22,7 +22,7 @@ public class StatIncreaseAmu {
     @JoinColumn(name = "amulet_id", nullable = false)
     private Amulet amulet;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "stat_id", nullable = false)
     private Stat stat;

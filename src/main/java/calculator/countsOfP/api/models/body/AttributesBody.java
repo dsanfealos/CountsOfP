@@ -20,12 +20,12 @@ public class AttributesBody {
 
     private Integer advance;
 
-    private List<Amulet> amulets;
+    private List<Long> amuletIds;
 
     public AttributesBody() {
     }
 
-    public AttributesBody(Long level, Integer vitality, Integer vigor, Integer capacity, Integer motivity, Integer technique, Integer advance, List<Amulet> amulets) {
+    public AttributesBody(Long level, Integer vitality, Integer vigor, Integer capacity, Integer motivity, Integer technique, Integer advance, List<Long> amuletIds) {
         this.level = level;
         this.vitality = vitality;
         this.vigor = vigor;
@@ -33,7 +33,7 @@ public class AttributesBody {
         this.motivity = motivity;
         this.technique = technique;
         this.advance = advance;
-        this.amulets = amulets;
+        this.amuletIds = amuletIds;
     }
 
     public Long getLevel() {
@@ -92,11 +92,11 @@ public class AttributesBody {
         this.advance = advance;
     }
 
-    public List<Amulet> getAmulets() {
-        return amulets;
+    public List<Long> getAmuletIds() {
+        return amuletIds;
     }
 
-    public void setAmulets(List<Amulet> amulets) {
-        this.amulets = amulets;
+    public void setAmuletIds(List<Long> amuletIds) {
+        this.amuletIds = amuletIds;
     }
 }
