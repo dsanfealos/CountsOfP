@@ -19,7 +19,7 @@ public class AttributeIncreaseAmu {
     @JoinColumn(name = "amulet_id", nullable = false)
     private Amulet amulet;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "attribute_id", nullable = false)
     private Attribute attribute;

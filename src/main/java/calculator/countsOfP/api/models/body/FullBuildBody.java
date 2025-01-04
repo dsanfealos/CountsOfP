@@ -1,5 +1,9 @@
 package calculator.countsOfP.api.models.body;
 
+import calculator.countsOfP.models.build.Armor;
+
+import java.util.List;
+
 public class FullBuildBody {
 
     private AttributesBody initialAttributesBody;
@@ -12,16 +16,19 @@ public class FullBuildBody {
 
     private StatsWeaponSBody statsWeaponSBody;
 
+    private List<Long> armorPiecesIds;
+
     public FullBuildBody() {
     }
 
     public FullBuildBody(AttributesBody initialAttributesBody, AttributesBody finalAttributesBody,
-                         Boolean isWeaponS, StatsWeaponNBody statsWeaponNBody, StatsWeaponSBody statsWeaponSBody) {
+                         Boolean isWeaponS, StatsWeaponNBody statsWeaponNBody, StatsWeaponSBody statsWeaponSBody, List<Long> armorPiecesIds) {
         this.initialAttributesBody = initialAttributesBody;
         this.finalAttributesBody = finalAttributesBody;
         this.isWeaponS = isWeaponS;
         this.statsWeaponNBody = statsWeaponNBody;
         this.statsWeaponSBody = statsWeaponSBody;
+        this.armorPiecesIds = armorPiecesIds;
     }
 
     public AttributesBody getInitialAttributesBody() {
@@ -62,5 +69,13 @@ public class FullBuildBody {
 
     public void setStatsWeaponSBody(StatsWeaponSBody statsWeaponSBody) {
         this.statsWeaponSBody = statsWeaponSBody;
+    }
+
+    public List<Long> getArmorPiecesIds() {
+        return armorPiecesIds;
+    }
+
+    public void setArmorPiecesIds(List<Long> armorPiecesIds) {
+        this.armorPiecesIds = armorPiecesIds;
     }
 }

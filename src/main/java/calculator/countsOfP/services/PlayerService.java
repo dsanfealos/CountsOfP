@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.LongStream;
 
@@ -93,8 +92,8 @@ public class PlayerService {
         finalAttribute.add(finalBody.getVigor());
         finalAttribute.add(finalBody.getCapacity());
         Map<String, Integer> increasedAtt;
-        if (finalBody.getAmulets() != null) {
-            increasedAtt = increaseAttributes(finalBody.getAmulets());
+        if (finalBody.getAmuletIds() != null) {
+            increasedAtt = increaseAttributesByAmulet(finalBody.getAmuletIds());
 
             finalAttribute.add(finalBody.getMotivity() + increasedAtt.get("Motivity"));
             finalAttribute.add(finalBody.getTechnique() + increasedAtt.get("Technique"));
@@ -105,7 +104,7 @@ public class PlayerService {
             finalAttribute.add(finalBody.getAdvance());
         }
 
-        Map<Long, Double> finalStats = increasedStatsMap(initialAttribute, finalAttribute, finalBody.getAmulets());
+        Map<Long, Double> finalStats = increasedStatsMap(initialAttribute, finalAttribute, finalBody.getAmuletIds());
         response.setLevel(finalBody.getLevel());
         response.setVitality(finalAttribute.get(0));
         response.setVigor(finalAttribute.get(1));
@@ -117,7 +116,7 @@ public class PlayerService {
         return response;
     }
 
-    public Map<Long, Double> increasedStatsMap(List<Integer> initialAttributes, List<Integer> finalAttributes, List<Amulet> amulets){
+    public Map<Long, Double> increasedStatsMap(List<Integer> initialAttributes, List<Integer> finalAttributes, List<Long> amuletIds){
         Map<Long, Double> finalStats = new HashMap<>();
         List<Attribute> attributes = attributeDAO.findAll();
         //We get initial and desired attributes
@@ -144,14 +143,14 @@ public class PlayerService {
                 }
             }
         }
-        finalStats = increaseStatsByAmulet(finalStats, amulets);
+        if (amuletIds != null) finalStats = increaseStatsByAmulet(finalStats, amuletIds);
         return finalStats;
     }
 
-    public Map<Long, Double> increaseStatsByAmulet(Map<Long, Double> finalStats, List<Amulet> amulets){
-        for (Amulet amulet: amulets){
+    public Map<Long, Double> increaseStatsByAmulet(Map<Long, Double> finalStats, List<Long> amuletIds){
+        for (Long amuletId: amuletIds){
             for (Long stat: finalStats.keySet()){
-                Optional<StatIncreaseAmu> increase = statIncreaseAmuDAO.findByAmuletAndStat(amulet, statDAO.findById(stat).get());
+                Optional<StatIncreaseAmu> increase = statIncreaseAmuDAO.findByAmuletAndStat(getAmulet(amuletId), statDAO.findById(stat).get());
                 if (increase.isPresent()){
                     Double result = finalStats.get(stat) * (1 + increase.get().getPercentageIncrease()) + increase.get().getFlatIncrease();
                     BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
@@ -170,29 +169,31 @@ public class PlayerService {
         return namedStats;
     }
 
-    public Amulet getAmulet(Long id){
-        return amuletDAO.findById(id).get();
-    }
-
-    public Map<String,Integer> increaseAttributes(List<Amulet> amulets){
+    public Map<String,Integer> increaseAttributesByAmulet(List<Long> amuletIds){
         List<Attribute> attributes = attributeDAO.findAll();
         Map<String, Integer> increases = new LinkedHashMap<>();
         increases.put("Motivity", 0);
         increases.put("Technique", 0);
         increases.put("Advance", 0);
-        for(Amulet amulet:amulets){
+        for(Long amuletId:amuletIds){
             for (Attribute attribute:attributes){
+                Amulet amulet = getAmulet(amuletId);
                 Optional<AttributeIncreaseAmu> increase = attributeIncreaseAmuDAO.findByAmuletAndAttribute(amulet,attribute);
                 if (increase.isPresent()){
                     String name = attribute.getName();
-                    increases.replace(name, increases.get(name) + increaseAttributeByAmulet(amulet, attribute));
+                    Integer result = attributeIncreaseAmuDAO.findByAmuletAndAttribute(amulet, attribute).get().getFlatIncrease();
+                    increases.replace(name, increases.get(name) + result);
                 }
             }
         }
         return increases;
     }
 
-    public Integer increaseAttributeByAmulet(Amulet amulet, Attribute attribute){
-        return attributeIncreaseAmuDAO.findByAmuletAndAttribute(amulet, attribute).get().getFlatIncrease();
+    public Amulet getAmulet(Long id){
+        return amuletDAO.findById(id).get();
+    }
+
+    public List<Amulet> getAllAmulets(){
+        return amuletDAO.findAll();
     }
 }

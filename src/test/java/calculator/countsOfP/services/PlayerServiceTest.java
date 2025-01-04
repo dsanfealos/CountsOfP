@@ -47,9 +47,9 @@ public class PlayerServiceTest {
     @Test
     @Transactional
     public void testSimulateStats(){
-        List<Amulet> amulets = List.of(playerService.getAmulet(2L), playerService.getAmulet(4L), playerService.getAmulet(15L), playerService.getAmulet(21L), playerService.getAmulet(24L));
+        List<Long> amuletIds = List.of(2L, 4L, 15L, 21L, 24L);
         AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10, null);
-        AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, amulets);
+        AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, amuletIds);
 
 
         StatsResponse response = playerService.simulateStats(initialBody, finalBody);

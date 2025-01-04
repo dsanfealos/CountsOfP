@@ -4,24 +4,36 @@ import calculator.countsOfP.api.models.body.FullBuildBody;
 import calculator.countsOfP.api.models.body.TotalAttackBody;
 import calculator.countsOfP.api.models.response.*;
 import calculator.countsOfP.exceptions.NotEnoughModulesException;
+import calculator.countsOfP.models.build.Armor;
+import calculator.countsOfP.models.build.StatIncreaseArmor;
+import calculator.countsOfP.models.build.dao.ArmorDAO;
 import calculator.countsOfP.models.build.dao.POrganDAO;
+import calculator.countsOfP.models.build.dao.StatIncreaseArmorDAO;
+import calculator.countsOfP.models.player.Stat;
+import calculator.countsOfP.models.player.dao.StatDAO;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 @Service
 public class FullBuildService {
 
     private POrganDAO pOrganDAO;
-
     private PlayerService playerService;
-
     private WeaponService weaponService;
+    private StatDAO statDAO;
+    private StatIncreaseArmorDAO statIncreaseArmorDAO;
+    private ArmorDAO armorDAO;
 
-    public FullBuildService(POrganDAO pOrganDAO, PlayerService playerService, WeaponService weaponService) {
+    public FullBuildService(POrganDAO pOrganDAO, PlayerService playerService, WeaponService weaponService, StatDAO statDAO, StatIncreaseArmorDAO statIncreaseArmorDAO, ArmorDAO armorDAO) {
         this.pOrganDAO = pOrganDAO;
         this.playerService = playerService;
         this.weaponService = weaponService;
+        this.statDAO = statDAO;
+        this.statIncreaseArmorDAO = statIncreaseArmorDAO;
+        this.armorDAO = armorDAO;
     }
 
     public Integer costUpgradeArm(Integer initialLevel, Integer finalLevel){
@@ -51,10 +63,16 @@ public class FullBuildService {
 
     public FullBuildResponse build(FullBuildBody body){
         StatsResponse stats = playerService.simulateStats(body.getInitialAttributesBody(), body.getFinalAttributesBody());
+        List<Armor> armorPieces = new ArrayList<>();
+        for (Long armorId: body.getArmorPiecesIds()){
+            armorPieces.add(getArmor(armorId));
+        }
+        if (body.getArmorPiecesIds() != null) {
+            stats = increaseStatsByArmor(stats, armorPieces);
+        }
         StatsWeaponNResponse weaponN = null;
         StatsWeaponSResponse weaponS = null;
         TotalAttackBody attackBody;
-        TotalAttackResponse attack;
         if (body.getIsWeaponS()){
             weaponS = weaponService.upgradeLevelS(body.getStatsWeaponSBody());
             attackBody = new TotalAttackBody(true, weaponS.getStats().getId(),
@@ -65,7 +83,63 @@ public class FullBuildService {
                     weaponN.getBlade().getId(), weaponN.getHandle().getId(), stats.getMotivity(), stats.getTechnique(), stats.getAdvance());
 
         }
-        attack = weaponService.calculateAttack(attackBody);
-        return new FullBuildResponse(stats, attack, body.getIsWeaponS(), weaponN, weaponS);
+        TotalAttackResponse attack = weaponService.calculateAttack(attackBody);
+        return new FullBuildResponse(stats, attack, body.getIsWeaponS(), weaponN, weaponS, armorPieces, calculateWeight(body));
+    }
+
+    public Double calculateWeight(FullBuildBody body){
+        double weight = 0.00;
+        for (Long amuletId: body.getFinalAttributesBody().getAmuletIds()){
+            weight = weight + playerService.getAmulet(amuletId).getWeight();
+        }
+        for (Long armorId: body.getArmorPiecesIds()){
+            weight = weight + getArmor(armorId).getWeight();
+        }
+        if (body.getIsWeaponS()){
+            StatsWeaponSResponse weaponS = weaponService.upgradeLevelS(body.getStatsWeaponSBody());
+            weight = weight + weaponS.getStats().getWeight();
+        } else{
+            StatsWeaponNResponse weaponN = weaponService.upgradeLevelN(body.getStatsWeaponNBody());
+            weight = weight + weaponN.getWeight();
+
+        }
+        return weight;
+    }
+
+    public StatsResponse increaseStatsByArmor(StatsResponse stats, List<Armor> armorPieces){
+        List<Stat> allStats = statDAO.findAll();
+        Map<Long, Double> totalIncreases = new LinkedHashMap<>();
+        for (Armor armor: armorPieces){
+            for (Stat stat: allStats){
+                Optional<StatIncreaseArmor> increaseByArmor = statIncreaseArmorDAO.findByArmorAndStat(armor, stat);
+                if (increaseByArmor.isPresent()) {
+                    if (totalIncreases.containsKey(stat.getId())) {
+                        double result = totalIncreases.get(stat.getId()) + increaseByArmor.get().getFlatIncrease();
+                        totalIncreases.replace(stat.getId(), result);
+                    }
+                    totalIncreases.put(stat.getId(),increaseByArmor.get().getFlatIncrease());
+                }
+            }
+        }
+        Map<String, Double> preStats = stats.getStats();
+        for (Long statId: totalIncreases.keySet()){
+            for (String statName: preStats.keySet()){
+                if (Objects.equals(statDAO.findById(statId).get().getName(), statName)){
+                    double result = preStats.get(statName) + totalIncreases.get(statId);
+                    BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
+                    preStats.replace(statName, bd.doubleValue());
+                }
+            }
+        }
+        stats.setStats(preStats);
+        return stats;
+    }
+
+    public Armor getArmor(Long id){
+        return armorDAO.findById(id).get();
+    }
+
+    public List<Armor> getAllArmors(){
+        return armorDAO.findAll();
     }
 }
