@@ -116,21 +116,37 @@ public class FullBuildService {
                     if (totalIncreases.containsKey(stat.getId())) {
                         double result = totalIncreases.get(stat.getId()) + increaseByArmor.get().getFlatIncrease();
                         totalIncreases.replace(stat.getId(), result);
+                    }else{
+                        totalIncreases.put(stat.getId(),increaseByArmor.get().getFlatIncrease());
                     }
-                    totalIncreases.put(stat.getId(),increaseByArmor.get().getFlatIncrease());
                 }
             }
         }
+
+//        armorPieces.stream()
+//                .flatMap(armor -> allStats.stream()
+//                        .filter(stat -> statIncreaseArmorDAO.findByArmorAndStat(armor, stat).isPresent())
+//                        .filter(stat -> totalIncreases.containsKey(stat.getId()))
+//                        .map(stat -> Map.entry(stat.getId(), totalIncreases.get(stat.getId()) + statIncreaseArmorDAO.findByArmorAndStat(armor,stat).get().getFlatIncrease())))
+//                .forEach(entry -> totalIncreases.replace(entry.getKey(), entry.getValue()));
+//
+
         Map<String, Double> preStats = stats.getStats();
-        for (Long statId: totalIncreases.keySet()){
-            for (String statName: preStats.keySet()){
-                if (Objects.equals(statDAO.findById(statId).get().getName(), statName)){
-                    double result = preStats.get(statName) + totalIncreases.get(statId);
-                    BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
-                    preStats.replace(statName, bd.doubleValue());
-                }
-            }
-        }
+//        for (Long statId: totalIncreases.keySet()){
+//            for (String statName: preStats.keySet()){
+//                if (Objects.equals(statDAO.findById(statId).get().getName(), statName)){
+//                    double result = preStats.get(statName) + totalIncreases.get(statId);
+//                    BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
+//                    preStats.replace(statName, bd.doubleValue());
+//                }
+//            }
+//        }
+
+        totalIncreases.keySet().stream()
+                .flatMap(statId -> preStats.keySet().stream()
+                        .filter(statName -> Objects.equals(statDAO.findById(statId).get().getName(), statName))
+                        .map(statName -> Map.entry(statName, preStats.get(statName) + totalIncreases.get(statId))))
+                .forEach(entry -> preStats.replace(entry.getKey(), new BigDecimal(entry.getValue()).setScale(2, RoundingMode.HALF_UP).doubleValue()));
         stats.setStats(preStats);
         return stats;
     }
