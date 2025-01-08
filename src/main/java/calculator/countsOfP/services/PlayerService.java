@@ -55,22 +55,27 @@ public class PlayerService {
     public Map<Long, Double> increaseStatsByAttribute(Long attributeId, Integer initialValue, Integer finalValue){
         //Get the List of increased stats
         Attribute attribute = attributeDAO.findById(attributeId).get();
-        List<StatIncreaseAtt> list = statIncreaseDAO.findByAttributeAndAttributeValueBetween(attribute, initialValue, finalValue);
-
-        //Get only the start and the end of each stat increase
+//        List<StatIncreaseAtt> list = statIncreaseDAO.findByAttributeAndAttributeValueBetween(attribute, initialValue, finalValue);
+//
+//        //Get only the start and the end of each stat increase
+//        Map<Long, Double> increasedStats = new HashMap<>();
+//        Long statId = 0L;
+//        Double initialIncrease = 0.00;
+//        for (StatIncreaseAtt row:list){
+//            if (row.getAttributeValue() == initialValue){
+//                statId = row.getStat().getId();
+//                initialIncrease = row.getIncrease();
+//            } else if (row.getAttributeValue() == finalValue) {
+//                Double increase = row.getIncrease() - initialIncrease;
+//                increasedStats.put(statId, increase);
+//                statId = 0L;
+//                initialIncrease = 0.00;
+//            }
+//        }
         Map<Long, Double> increasedStats = new HashMap<>();
-        Long statId = 0L;
-        Double initialIncrease = 0.00;
-        for (StatIncreaseAtt row:list){
-            if (row.getAttributeValue() == initialValue){
-                statId = row.getStat().getId();
-                initialIncrease = row.getIncrease();
-            } else if (row.getAttributeValue() == finalValue) {
-                Double increase = row.getIncrease() - initialIncrease;
-                increasedStats.put(statId, increase);
-                statId = 0L;
-                initialIncrease = 0.00;
-            }
+        List<StatIncreaseAtt> list = statIncreaseDAO.findByAttributeAndAttributeValue(attribute, finalValue);
+        for (StatIncreaseAtt row: list){
+            increasedStats.put(row.getStat().getId(), row.getIncrease());
         }
         return increasedStats;
     }
@@ -119,6 +124,10 @@ public class PlayerService {
     public Map<Long, Double> increasedStatsMap(List<Integer> initialAttributes, List<Integer> finalAttributes, List<Long> amuletIds){
         Map<Long, Double> finalStats = new HashMap<>();
         List<Attribute> attributes = attributeDAO.findAll();
+        List<Stat> statList = statDAO.findAll();
+        Map<Long, Double> baseStats = finalStats;
+        statList.stream().map(stat -> Map.entry(stat.getId(), stat.getBaseValue()))
+                .forEach(entry -> baseStats.put(entry.getKey(), entry.getValue()));
         //We get initial and desired attributes
         for (int index = 0; index<attributes.size(); index++){
             //We create a list of the stat increase for each attribute they are related to
@@ -136,10 +145,10 @@ public class PlayerService {
                     finalStats.replace(statId, finalStats.get(statId), result);
                 }else {
                     //If not, we add the base value and the first increase.
-                    Stat stat = statDAO.findById(statId).get();
-                    Double baseIncrease = stat.getBaseValue() + statIncreaseDAO.
-                            findByAttributeAndAttributeValueAndStat(attribute, finalAttribute, stat).getIncrease();
-                    finalStats.put(statId, baseIncrease);
+//                    Stat stat = statDAO.findById(statId).get();
+//                    Double baseIncrease = stat.getBaseValue() + statIncreaseDAO.
+//                            findByAttributeAndAttributeValueAndStat(attribute, finalAttribute, stat).getIncrease();
+//                    finalStats.put(statId, baseIncrease);
                 }
             }
         }

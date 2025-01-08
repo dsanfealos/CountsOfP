@@ -138,14 +138,13 @@ public class WeaponService {
 
     public TotalAttackResponse calculateAttack(TotalAttackBody body){
         String name;
-        StatsWeaponS weaponS ;
+        StatsWeaponS weaponS;
         Blade blade;
         Handle handle;
-        Integer basePhysicalAttack;
-        Integer baseElementalAttack;
-        Character motivityScaling;
-        Character techniqueScaling;
-        Character advanceScaling;
+        Integer baseLevelOnePhysicalAttack, baseLevelOneElementalAttack;
+        Integer basePhysicalAttack, baseElementalAttack;
+        Character motivityScaling, techniqueScaling, advanceScaling;
+
         if (body.getIsWeaponS()){
             weaponS = statsWeaponSDAO.findById(body.getWeaponSId()).get();
             name = weaponS.getName();
@@ -154,6 +153,8 @@ public class WeaponService {
             motivityScaling = weaponS.getMotivity();
             techniqueScaling = weaponS.getTechnique();
             advanceScaling = weaponS.getAdvance();
+            baseLevelOnePhysicalAttack = statsWeaponSDAO.findByNameAndCurrentLevel(weaponS.getName(), weaponUpgradeSDAO.findById(1L).get()).getPhysicalAttack();
+            baseLevelOneElementalAttack = statsWeaponSDAO.findByNameAndCurrentLevel(weaponS.getName(), weaponUpgradeSDAO.findById(1L).get()).getElementalAttack();
         }else{
             blade = bladeDAO.findById(body.getBladeId()).get();
             handle = handleDAO.findById(body.getHandleId()).get();
@@ -163,23 +164,25 @@ public class WeaponService {
             motivityScaling = handle.getMotivity();
             techniqueScaling = handle.getTechnique();
             advanceScaling = handle.getAdvance();
+            baseLevelOnePhysicalAttack = bladeDAO.findByNameAndCurrentLevel(blade.getName(), weaponUpgradeNDAO.findById(1L).get()).getPhysicalAttack();
+            baseLevelOneElementalAttack = bladeDAO.findByNameAndCurrentLevel(blade.getName(), weaponUpgradeNDAO.findById(1L).get()).getElementalAttack();
         }
 
-        Integer bonusPhysicalAttack =  calculateBonusAttack(4L, motivityScaling, body.getMotivity(), basePhysicalAttack) +
-                calculateBonusAttack(5L, techniqueScaling, body.getTechnique(), basePhysicalAttack);
-        Integer bonusElementalAttack =  calculateBonusAttack(6L, advanceScaling, body.getAdvance(), baseElementalAttack);
+        Integer bonusPhysicalAttack =  calculateBonusAttack(4L, motivityScaling, body.getMotivity(), baseLevelOnePhysicalAttack) +
+                calculateBonusAttack(5L, techniqueScaling, body.getTechnique(), baseLevelOnePhysicalAttack);
+        Integer bonusElementalAttack =  calculateBonusAttack(6L, advanceScaling, body.getAdvance(), baseLevelOneElementalAttack);
         Integer totalAttack = baseElementalAttack + basePhysicalAttack + bonusPhysicalAttack + bonusElementalAttack;
 
         return new TotalAttackResponse(name,basePhysicalAttack, baseElementalAttack, bonusPhysicalAttack, bonusElementalAttack, totalAttack);
     }
 
-    public Integer calculateBonusAttack(Long attributeId, Character scalingLetter, Integer attributeValue, Integer baseAttack){
+    public Integer calculateBonusAttack(Long attributeId, Character scalingLetter, Integer attributeValue, Integer baseLevelOneAttack){
         double modifier = 0.00;
         if (scalingLetter != '-'){
             modifier = scalingDAO.findByAttributeAndLetterAndLevel(
                     attributeDAO.findById(attributeId).get(), scalingLetter, attributeValue).getBonusAtk();
         }
-        double bonusAttack = baseAttack * modifier;
+        double bonusAttack = baseLevelOneAttack * modifier;
         return (int) bonusAttack;
     }
 
