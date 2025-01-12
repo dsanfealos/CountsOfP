@@ -112,8 +112,8 @@ public class WeaponService {
     }
 
     public List<Blade> getAllBlades(){
-        WeaponUpgradeN currenteLevel = weaponUpgradeNDAO.findById(1L).get();
-        return bladeDAO.findByCurrentLevel(currenteLevel);
+        WeaponUpgradeN currentLevel = weaponUpgradeNDAO.findById(1L).get();
+        return bladeDAO.findByCurrentLevel(currentLevel);
     }
 
     public Blade getBlade(Long id){

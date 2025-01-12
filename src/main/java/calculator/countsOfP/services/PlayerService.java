@@ -17,8 +17,6 @@ import calculator.countsOfP.models.player.dao.StatDAO;
 import calculator.countsOfP.models.player.dao.StatIncreaseDAO;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.LongStream;
 
@@ -52,28 +50,11 @@ public class PlayerService {
                 .sum();
     }
 
-    public Map<Long, Double> increaseStatsByAttribute(Long attributeId, Integer initialValue, Integer finalValue){
-        //Get the List of increased stats
+    public Map<Long, Double> increaseStatsByAttribute(Long attributeId, int finalValue){
         Attribute attribute = attributeDAO.findById(attributeId).get();
-//        List<StatIncreaseAtt> list = statIncreaseDAO.findByAttributeAndAttributeValueBetween(attribute, initialValue, finalValue);
-//
-//        //Get only the start and the end of each stat increase
-//        Map<Long, Double> increasedStats = new HashMap<>();
-//        Long statId = 0L;
-//        Double initialIncrease = 0.00;
-//        for (StatIncreaseAtt row:list){
-//            if (row.getAttributeValue() == initialValue){
-//                statId = row.getStat().getId();
-//                initialIncrease = row.getIncrease();
-//            } else if (row.getAttributeValue() == finalValue) {
-//                Double increase = row.getIncrease() - initialIncrease;
-//                increasedStats.put(statId, increase);
-//                statId = 0L;
-//                initialIncrease = 0.00;
-//            }
-//        }
         Map<Long, Double> increasedStats = new HashMap<>();
         List<StatIncreaseAtt> list = statIncreaseDAO.findByAttributeAndAttributeValue(attribute, finalValue);
+
         for (StatIncreaseAtt row: list){
             increasedStats.put(row.getStat().getId(), row.getIncrease());
         }
@@ -84,88 +65,75 @@ public class PlayerService {
         StatsResponse response = new StatsResponse();
         response.setErgoCost(costUpgradeLevelP(initialBody.getLevel(), finalBody.getLevel()));
 
-        List<Integer> initialAttribute = new ArrayList<>();
-        initialAttribute.add(initialBody.getVitality());
-        initialAttribute.add(initialBody.getVigor());
-        initialAttribute.add(initialBody.getCapacity());
-        initialAttribute.add(initialBody.getMotivity());
-        initialAttribute.add(initialBody.getTechnique());
-        initialAttribute.add(initialBody.getAdvance());
-
-        List<Integer> finalAttribute = new ArrayList<>();
-        finalAttribute.add(finalBody.getVitality());
-        finalAttribute.add(finalBody.getVigor());
-        finalAttribute.add(finalBody.getCapacity());
+        int bodySize = 6;
+        int[] finalAttribute = new int[bodySize];
+        finalAttribute[0] = finalBody.getVitality();
+        finalAttribute[1] = finalBody.getVigor();
+        finalAttribute[2] = finalBody.getCapacity();
         Map<String, Integer> increasedAtt;
         if (finalBody.getAmuletIds() != null) {
             increasedAtt = increaseAttributesByAmulet(finalBody.getAmuletIds());
 
-            finalAttribute.add(finalBody.getMotivity() + increasedAtt.get("Motivity"));
-            finalAttribute.add(finalBody.getTechnique() + increasedAtt.get("Technique"));
-            finalAttribute.add(finalBody.getAdvance() + increasedAtt.get("Advance"));
+            finalAttribute[3] = finalBody.getMotivity() + increasedAtt.get("Motivity");
+            finalAttribute[4] = finalBody.getTechnique() + increasedAtt.get("Technique");
+            finalAttribute[5] = finalBody.getAdvance() + increasedAtt.get("Advance");
         }else {
-            finalAttribute.add(finalBody.getMotivity());
-            finalAttribute.add(finalBody.getTechnique());
-            finalAttribute.add(finalBody.getAdvance());
+            finalAttribute[3] = finalBody.getMotivity();
+            finalAttribute[4] = finalBody.getTechnique();
+            finalAttribute[5] = finalBody.getAdvance();
         }
 
-        Map<Long, Double> finalStats = increasedStatsMap(initialAttribute, finalAttribute, finalBody.getAmuletIds());
+        Map<Long, Double> finalStats = increasedStatsMap(finalAttribute, finalBody.getAmuletIds()); //revisar lento
         response.setLevel(finalBody.getLevel());
-        response.setVitality(finalAttribute.get(0));
-        response.setVigor(finalAttribute.get(1));
-        response.setCapacity(finalAttribute.get(2));
-        response.setMotivity(finalAttribute.get(3));
-        response.setTechnique(finalAttribute.get(4));
-        response.setAdvance(finalAttribute.get(5));
+        response.setVitality(finalAttribute[0]);
+        response.setVigor(finalAttribute[1]);
+        response.setCapacity(finalAttribute[2]);
+        response.setMotivity(finalAttribute[3]);
+        response.setTechnique(finalAttribute[4]);
+        response.setAdvance(finalAttribute[5]);
         response.setStats(nameStatsMap(finalStats));
         return response;
     }
 
-    public Map<Long, Double> increasedStatsMap(List<Integer> initialAttributes, List<Integer> finalAttributes, List<Long> amuletIds){
+    public Map<Long, Double> increasedStatsMap(int[] finalAttributes, List<Long> amuletIds) {
         Map<Long, Double> finalStats = new HashMap<>();
         List<Attribute> attributes = attributeDAO.findAll();
         List<Stat> statList = statDAO.findAll();
-        Map<Long, Double> baseStats = finalStats;
-        statList.stream().map(stat -> Map.entry(stat.getId(), stat.getBaseValue()))
-                .forEach(entry -> baseStats.put(entry.getKey(), entry.getValue()));
-        //We get initial and desired attributes
-        for (int index = 0; index<attributes.size(); index++){
-            //We create a list of the stat increase for each attribute they are related to
-            Attribute attribute = attributes.get(index);
-            Integer initialAttribute = initialAttributes.get(index);
-            Integer finalAttribute = finalAttributes.get(index);
-            Map<Long, Double> increasedStats = increaseStatsByAttribute(attribute.getId(),
-                    initialAttribute, finalAttribute);
-            //For each altered stat, we add them to finalStats map, in order to stack up each
-            // stat increase caused by different attributes.
-            for (Long statId: increasedStats.keySet()){
-                //If the stat already exists in the map, we add the additional increases.
-                if (finalStats.containsKey(statId)){
-                    Double result = increasedStats.get(statId) + finalStats.get(statId);
-                    finalStats.replace(statId, finalStats.get(statId), result);
-                }else {
-                    //If not, we add the base value and the first increase.
-//                    Stat stat = statDAO.findById(statId).get();
-//                    Double baseIncrease = stat.getBaseValue() + statIncreaseDAO.
-//                            findByAttributeAndAttributeValueAndStat(attribute, finalAttribute, stat).getIncrease();
-//                    finalStats.put(statId, baseIncrease);
-                }
-            }
+
+        for (Stat stat : statList) {
+            finalStats.put(stat.getId(), stat.getBaseValue());
         }
-        if (amuletIds != null) finalStats = increaseStatsByAmulet(finalStats, amuletIds);
+
+        for (int index = 0; index < attributes.size(); index++) {
+            Attribute attribute = attributes.get(index);
+            int finalAttribute = finalAttributes[index];
+            Map<Long, Double> increasedStats = increaseStatsByAttribute(attribute.getId(), finalAttribute);
+
+            Map<Long, Double> finalStats1 = finalStats;
+            increasedStats.forEach((statId, increaseValue) -> finalStats1.merge(statId, increaseValue, Double::sum));
+        }
+
+        if (amuletIds != null) {
+            finalStats = increaseStatsByAmulet(finalStats, amuletIds);
+        }
+
         return finalStats;
     }
 
     public Map<Long, Double> increaseStatsByAmulet(Map<Long, Double> finalStats, List<Long> amuletIds){
-        for (Long amuletId: amuletIds){
-            for (Long stat: finalStats.keySet()){
-                Optional<StatIncreaseAmu> increase = statIncreaseAmuDAO.findByAmuletAndStat(getAmulet(amuletId), statDAO.findById(stat).get());
-                if (increase.isPresent()){
-                    Double result = finalStats.get(stat) * (1 + increase.get().getPercentageIncrease()) + increase.get().getFlatIncrease();
-                    BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
-                    finalStats.replace(stat, bd.doubleValue());
-                }
-            }
+        double result;
+
+        List<Amulet> amulets = new ArrayList<>();
+        amuletIds.forEach(id -> amulets.add(getAmulet(id)));
+        List<Stat> stats = new ArrayList<>();
+        finalStats.keySet().forEach(id -> stats.add(statDAO.findById(id).get()));
+        List<StatIncreaseAmu> allIncreases = statIncreaseAmuDAO.findByAmuletsAndStats(amulets, stats);
+        for (StatIncreaseAmu increase : allIncreases){
+            long statId = increase.getStat().getId();
+            double flatIncrease = increase.getFlatIncrease();
+            double percentageIncrease = increase.getPercentageIncrease();
+            result = finalStats.get(statId) * (1 + percentageIncrease) + flatIncrease;
+            finalStats.replace(increase.getStat().getId(), Math.round(result * 100.0)/100.0);
         }
         return finalStats;
     }
@@ -184,8 +152,8 @@ public class PlayerService {
         increases.put("Motivity", 0);
         increases.put("Technique", 0);
         increases.put("Advance", 0);
-        for(Long amuletId:amuletIds){
-            for (Attribute attribute:attributes){
+        for(Long amuletId : amuletIds){
+            for (Attribute attribute : attributes){
                 Amulet amulet = getAmulet(amuletId);
                 Optional<AttributeIncreaseAmu> increase = attributeIncreaseAmuDAO.findByAmuletAndAttribute(amulet,attribute);
                 if (increase.isPresent()){
