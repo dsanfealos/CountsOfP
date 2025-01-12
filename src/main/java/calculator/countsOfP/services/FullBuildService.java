@@ -13,9 +13,8 @@ import calculator.countsOfP.models.player.Stat;
 import calculator.countsOfP.models.player.dao.StatDAO;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FullBuildService {
@@ -108,46 +107,28 @@ public class FullBuildService {
 
     public StatsResponse increaseStatsByArmor(StatsResponse stats, List<Armor> armorPieces){
         List<Stat> allStats = statDAO.findAll();
+        List<StatIncreaseArmor> allIncreases = statIncreaseArmorDAO.findByArmorsAndStats(armorPieces, allStats);
+
         Map<Long, Double> totalIncreases = new LinkedHashMap<>();
-        for (Armor armor: armorPieces){
-            for (Stat stat: allStats){
-                Optional<StatIncreaseArmor> increaseByArmor = statIncreaseArmorDAO.findByArmorAndStat(armor, stat);
-                if (increaseByArmor.isPresent()) {
-                    if (totalIncreases.containsKey(stat.getId())) {
-                        double result = totalIncreases.get(stat.getId()) + increaseByArmor.get().getFlatIncrease();
-                        totalIncreases.replace(stat.getId(), result);
-                    }else{
-                        totalIncreases.put(stat.getId(),increaseByArmor.get().getFlatIncrease());
-                    }
-                }
-            }
+
+        for (StatIncreaseArmor increase : allIncreases) {
+            long statId = increase.getStat().getId();
+            double flatIncrease = increase.getFlatIncrease();
+            totalIncreases.merge(statId, flatIncrease, Double::sum);
         }
 
-//        armorPieces.stream()
-//                .flatMap(armor -> allStats.stream()
-//                        .filter(stat -> statIncreaseArmorDAO.findByArmorAndStat(armor, stat).isPresent())
-//                        .filter(stat -> totalIncreases.containsKey(stat.getId()))
-//                        .map(stat -> Map.entry(stat.getId(), totalIncreases.get(stat.getId()) + statIncreaseArmorDAO.findByArmorAndStat(armor,stat).get().getFlatIncrease())))
-//                .forEach(entry -> totalIncreases.replace(entry.getKey(), entry.getValue()));
-//
-
         Map<String, Double> preStats = stats.getStats();
-//        for (Long statId: totalIncreases.keySet()){
-//            for (String statName: preStats.keySet()){
-//                if (Objects.equals(statDAO.findById(statId).get().getName(), statName)){
-//                    double result = preStats.get(statName) + totalIncreases.get(statId);
-//                    BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
-//                    preStats.replace(statName, bd.doubleValue());
-//                }
-//            }
-//        }
+        double result;
+        Map<Long, String> statIdToNameMap = allStats.stream()
+                .collect(Collectors.toMap(Stat::getId, Stat::getName));
 
-        totalIncreases.keySet().stream()
-                .flatMap(statId -> preStats.keySet().stream()
-                        .filter(statName -> Objects.equals(statDAO.findById(statId).get().getName(), statName))
-                        .map(statName -> Map.entry(statName, preStats.get(statName) + totalIncreases.get(statId))))
-                .forEach(entry -> preStats.replace(entry.getKey(), new BigDecimal(entry.getValue()).setScale(2, RoundingMode.HALF_UP).doubleValue()));
-        stats.setStats(preStats);
+        for (Long statId : totalIncreases.keySet()) {
+            String statName = statIdToNameMap.get(statId);
+            if (statName != null && preStats.containsKey(statName)) {
+                result = preStats.get(statName) + totalIncreases.get(statId);
+                preStats.replace(statName, Math.round(result * 100.0)/100.0);
+            }
+        }
         return stats;
     }
 

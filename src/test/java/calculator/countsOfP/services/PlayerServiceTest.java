@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class PlayerServiceTest {
     @Test
     @Transactional
     public void testIncreaseStatsByAttribute(){
-        Map<Long, Double> listOfStats = playerService.increaseStatsByAttribute(1L, 10, 20);
+        Map<Long, Double> listOfStats = playerService.increaseStatsByAttribute(1L, 20);
         List<Long> statIds = new ArrayList<>();
         List<Double> increases = new ArrayList<>();
         for(Long key: listOfStats.keySet()){
@@ -41,27 +42,43 @@ public class PlayerServiceTest {
             increases.add(listOfStats.get(key));
         }
         Assertions.assertEquals(statIds, List.of(1L, 4L, 5L, 8L, 11L, 14L));
-        Assertions.assertEquals(increases, List.of(168.0, 44.0, 16.0, 9.0, 9.0, 9.0));
+        Assertions.assertEquals(increases, List.of(210.0, 54.0, 19.0, 11.0, 11.0, 11.0));
     }
 
     @Test
     @Transactional
     public void testSimulateStats(){
-        List<Long> amuletIds = List.of(2L, 4L, 15L, 21L, 24L);
+        List<Long> amuletIds = List.of(1L, 4L, 15L, 21L, 24L);
         AttributesBody initialBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10, null);
         AttributesBody finalBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, amuletIds);
 
 
         StatsResponse response = playerService.simulateStats(initialBody, finalBody);
-        Map<String, Double> stats = Map.ofEntries(
-                entry("Health", 447.48), entry("Stamina", 181.7),
-                entry("Legion", 252.0), entry("Guard Regain", 84.0),
-                entry("Physical Def", 110.0), entry("Fire Def", 95.0),
-                entry("Fire Res", 117.0), entry("Electric Def", 95.0),
-                entry("Electric Res", 117.0), entry("Acid Def", 95.0),
-                entry("Acid Res", 117.0), entry("Disruption", 251.0),
-                entry("Shock", 75.0), entry("Break", 75.0),
-                entry("Weight", 102.7));
+        Map<String, Double> stats = new LinkedHashMap<>();
+        stats.put("Health", 423.72);
+        stats.put("Stamina", 185.15);
+        stats.put("Legion", 258.0);
+        stats.put("Guard Regain", 84.0);
+        stats.put("Physical Def", 166.0);
+        stats.put("Physical Red", 0.0);
+        stats.put("Physical Res", 0.00);
+        stats.put("Fire Def", 129.0);
+        stats.put("Fire Red", 0.0);
+        stats.put("Fire Res", 117.0);
+        stats.put("Electric Def", 129.0);
+        stats.put("Electric Red", 0.0);
+        stats.put("Electric Res", 117.0);
+        stats.put("Acid Def", 129.0);
+        stats.put("Acid Red", 0.0);
+        stats.put("Acid Res", 117.0);
+        stats.put("Disruption", 251.0);
+        stats.put("Shock", 117.0);
+        stats.put("Break", 117.0);
+        stats.put("Slash Red", 0.00);
+        stats.put("Strike Red", 0.00);
+        stats.put("Pierce Red", 0.00);
+        stats.put("Weight", 110.6);
+
         StatsResponse reference = new StatsResponse(38L, 15, 20, 20, 27, 23, 19, stats, 39449L);
         Assertions.assertEquals(response.getLevel(), reference.getLevel());
         Assertions.assertEquals(response.getErgoCost(), reference.getErgoCost());
