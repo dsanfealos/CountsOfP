@@ -11,6 +11,7 @@ import calculator.countsOfP.models.build.dao.POrganDAO;
 import calculator.countsOfP.models.build.dao.StatIncreaseArmorDAO;
 import calculator.countsOfP.models.player.Stat;
 import calculator.countsOfP.models.player.dao.StatDAO;
+import calculator.countsOfP.models.weapon.Handle;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -74,12 +75,14 @@ public class FullBuildService {
         TotalAttackBody attackBody;
         if (body.getIsWeaponS()){
             weaponS = weaponService.upgradeLevelS(body.getStatsWeaponSBody());
-            attackBody = new TotalAttackBody(true, weaponS.getStats().getId(),
+            if (body.getStatsWeaponSBody().getModifier() != null) weaponService.modifyHandle(weaponS.getStats(), body.getStatsWeaponSBody().getModifier());
+            attackBody = new TotalAttackBody(true, weaponS.getStats(),
                     null, null, stats.getMotivity(), stats.getTechnique(), stats.getAdvance());
         } else{
             weaponN = weaponService.upgradeLevelN(body.getStatsWeaponNBody());
+            if (body.getStatsWeaponNBody().getModifier() != null) weaponService.modifyHandle(weaponN.getHandle(), body.getStatsWeaponNBody().getModifier());
             attackBody = new TotalAttackBody(false, null,
-                    weaponN.getBlade().getId(), weaponN.getHandle().getId(), stats.getMotivity(), stats.getTechnique(), stats.getAdvance());
+                    weaponN.getBlade(), weaponN.getHandle(), stats.getMotivity(), stats.getTechnique(), stats.getAdvance());
 
         }
         TotalAttackResponse attack = weaponService.calculateAttack(attackBody);

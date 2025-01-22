@@ -12,11 +12,14 @@ public class StatsWeaponNBody {
 
     private Long handleId;
 
-    public StatsWeaponNBody(String bladeName, Long currentLevel, Long finalLevel, Long handleId) {
+    private String modifier;
+
+    public StatsWeaponNBody(String bladeName, Long currentLevel, Long finalLevel, Long handleId, String modifier) {
         this.bladeName = bladeName;
         this.currentLevel = currentLevel;
         this.finalLevel = finalLevel;
         this.handleId = handleId;
+        this.modifier = modifier;
     }
 
     public StatsWeaponNBody() {
@@ -52,5 +55,13 @@ public class StatsWeaponNBody {
 
     public void setHandleId(Long handleId) {
         this.handleId = handleId;
+    }
+
+    public String getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(String modifier) {
+        this.modifier = modifier;
     }
 }

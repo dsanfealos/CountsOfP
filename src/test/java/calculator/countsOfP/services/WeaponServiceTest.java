@@ -8,6 +8,7 @@ import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
 import calculator.countsOfP.api.models.response.TotalAttackResponse;
 import calculator.countsOfP.models.weapon.Blade;
 import calculator.countsOfP.models.weapon.Handle;
+import calculator.countsOfP.models.weapon.StatsWeaponS;
 import calculator.countsOfP.models.weapon.dao.BladeDAO;
 import calculator.countsOfP.models.weapon.dao.HandleDAO;
 import calculator.countsOfP.models.weapon.dao.StatsWeaponSDAO;
@@ -40,7 +41,7 @@ public class WeaponServiceTest {
     @Test
     @Transactional
     public void testUpgradeLevelS(){
-        StatsWeaponSResponse response = weaponService.upgradeLevelS(new StatsWeaponSBody("Etiquette", 1L, 3L));
+        StatsWeaponSResponse response = weaponService.upgradeLevelS(new StatsWeaponSBody("Etiquette", 1L, 3L, null));
         Map<String, Integer> materials = new LinkedHashMap<>();
         materials.put("Dark moon moonstone of the covenant", 3);
         StatsWeaponSResponse reference = new StatsWeaponSResponse(430L, materials, statsWeaponSDAO.findById(9L).get());
@@ -55,7 +56,7 @@ public class WeaponServiceTest {
     public void testUpgradeLevelN(){
         Handle handle = handleDAO.findById(4L).get();
         Blade blade = bladeDAO.findById(6L).get();
-        StatsWeaponNResponse response = weaponService.upgradeLevelN(new StatsWeaponNBody("Puppet's saber blade", 2L, 6L, 4L));
+        StatsWeaponNResponse response = weaponService.upgradeLevelN(new StatsWeaponNBody("Puppet's saber blade", 2L, 6L, 4L, null));
         String weaponName = "Puppet's saber blade" + " | " + "Fire axe handle";
         Map<String, Integer> materials = new LinkedHashMap<>();
         materials.put("Hidden moonstone", 6);
@@ -76,12 +77,45 @@ public class WeaponServiceTest {
     @Test
     @Transactional
     public void testTotalAttack(){
-        TotalAttackBody body = new TotalAttackBody(true,1L,null,null, 15,15,6);
+        StatsWeaponS weaponS = statsWeaponSDAO.findById(1L).get();
+        TotalAttackBody body = new TotalAttackBody(true,weaponS,null,null, 15,15,6);
         TotalAttackResponse reference = new TotalAttackResponse("Seven-coil spring sword", 130, 0, 59, 0, 189);
         TotalAttackResponse response = weaponService.calculateAttack(body);
         Assertions.assertEquals(response.getWeaponName(), reference.getWeaponName());
         Assertions.assertEquals(response.getBonusElementalAttack(), reference.getBonusElementalAttack());
         Assertions.assertEquals(response.getBonusPhysicalAttack(), reference.getBonusPhysicalAttack());
         Assertions.assertEquals(response.getTotalAttack(), reference.getTotalAttack());
+    }
+
+    @Test
+    @Transactional
+    public void testModifyHandle_Normal(){
+        Handle handle1 = handleDAO.findById(1L).get();
+        Handle handle2 = handleDAO.findById(3L).get();
+        Handle handle3 = handleDAO.findById(5L).get();
+        weaponService.modifyHandle(handle1, "motivity");
+        weaponService.modifyHandle(handle2, "technique");
+        weaponService.modifyHandle(handle3, "advance");
+        Assertions.assertEquals(handle1.getMotivity(), 'B');
+        Assertions.assertEquals(handle1.getTechnique(), 'D');
+        Assertions.assertEquals(handle2.getMotivity(), 'C');
+        Assertions.assertEquals(handle2.getTechnique(), 'C');
+        Assertions.assertEquals(handle3.getAdvance(), 'S');
+    }
+
+    @Test
+    @Transactional
+    public void testModifyHandle_Special(){
+        StatsWeaponS weapon1 = statsWeaponSDAO.findById(1L).get();
+        StatsWeaponS weapon2 = statsWeaponSDAO.findById(7L).get();
+        StatsWeaponS weapon3 = statsWeaponSDAO.findById(45L).get();
+        weaponService.modifyHandle(weapon1, "motivity");
+        weaponService.modifyHandle(weapon2, "technique");
+        weaponService.modifyHandle(weapon3, "advance");
+        Assertions.assertEquals(weapon1.getMotivity(), 'A');
+        Assertions.assertEquals(weapon1.getTechnique(), 'D');
+        Assertions.assertEquals(weapon2.getMotivity(), '-');
+        Assertions.assertEquals(weapon2.getTechnique(), 'S');
+        Assertions.assertEquals(weapon3.getAdvance(), 'D');
     }
 }

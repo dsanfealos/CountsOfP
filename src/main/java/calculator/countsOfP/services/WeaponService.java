@@ -12,6 +12,7 @@ import calculator.countsOfP.models.weapon.*;
 import calculator.countsOfP.models.weapon.dao.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class WeaponService {
                 materials.put(materialName, quantity);
             }
         }
+        if (body.getModifier() != null) modifyHandle(stats, body.getModifier());
         return new StatsWeaponSResponse(ergoCost, materials, stats);
     }
 
@@ -85,6 +87,8 @@ public class WeaponService {
         Handle handle = handleDAO.findById(body.getHandleId()).get();
         Double weight = blade.getWeight() + handle.getWeight();
         String weaponName = body.getBladeName() + " | " + handle.getName();
+        if (body.getModifier() != null) modifyHandle(handle, body.getModifier());
+
         StatsWeaponNResponse response = new StatsWeaponNResponse(weaponName, ergoCost, materials, weight, blade.getTotalAttack(), handle.getMotivity(),
                 handle.getTechnique(), handle.getAdvance(), blade.getPhysicalAttack(), blade.getElementalAttack(), blade, handle);
         return response;
@@ -146,7 +150,7 @@ public class WeaponService {
         Character motivityScaling, techniqueScaling, advanceScaling;
 
         if (body.getIsWeaponS()){
-            weaponS = statsWeaponSDAO.findById(body.getWeaponSId()).get();
+            weaponS = body.getWeaponS();
             name = weaponS.getName();
             baseElementalAttack = weaponS.getElementalAttack();
             basePhysicalAttack = weaponS.getPhysicalAttack();
@@ -156,8 +160,8 @@ public class WeaponService {
             baseLevelOnePhysicalAttack = statsWeaponSDAO.findByNameAndCurrentLevel(weaponS.getName(), weaponUpgradeSDAO.findById(1L).get()).getPhysicalAttack();
             baseLevelOneElementalAttack = statsWeaponSDAO.findByNameAndCurrentLevel(weaponS.getName(), weaponUpgradeSDAO.findById(1L).get()).getElementalAttack();
         }else{
-            blade = bladeDAO.findById(body.getBladeId()).get();
-            handle = handleDAO.findById(body.getHandleId()).get();
+            blade = body.getBlade();
+            handle = body.getHandle();
             name = blade.getName() + " | " + handle.getName();
             baseElementalAttack = blade.getElementalAttack();
             basePhysicalAttack = blade.getPhysicalAttack();
@@ -184,6 +188,75 @@ public class WeaponService {
         }
         double bonusAttack = baseLevelOneAttack * modifier;
         return (int) bonusAttack;
+    }
+
+    public void modifyHandle(Handle handle, String type){
+        char[] options = {'-','D','C','B','A','S'};
+        int length = options.length;
+        int indexM = 0;
+        int indexT = 0;
+        int indexA = 0;
+
+        for (int i = 0; i<length; i++){
+            if (options[i] == handle.getMotivity()) indexM = i;
+            if (options[i] == handle.getTechnique()) indexT = i;
+            if (options[i] == handle.getAdvance()) indexA = i;
+        }
+
+        switch (type){
+            case "motivity":
+                if (indexM != length-1) indexM++;
+                if (indexT != 0) indexT--;
+                handle.setMotivity(options[indexM]);
+                handle.setTechnique(options[indexT]);
+                break;
+            case "technique":
+                if (indexM != 0) indexM--;
+                if (indexT != length-1) indexT++;
+                handle.setMotivity(options[indexM]);
+                handle.setTechnique(options[indexT]);
+                break;
+            case "advance":
+                if (indexA != length-1) indexA++;
+                handle.setAdvance(options[indexA]);
+                break;
+            default:
+                System.err.println("Wrong type. It needs to be motivity, technique or advance");
+                break;
+        }
+    }
+
+    public void modifyHandle(StatsWeaponS weaponS, String type){
+        char[] options = {'-','D','C','B','A','S'};
+        int length = options.length;
+        int indexM = 0;
+        int indexT = 0;
+        int indexA = 0;
+
+        for (int i = 0; i<length; i++){
+            if (options[i] == weaponS.getMotivity()) indexM = i;
+            if (options[i] == weaponS.getTechnique()) indexT = i;
+            if (options[i] == weaponS.getAdvance()) indexA = i;
+        }
+
+        switch (type){
+            case "motivity":
+                if (indexM != length-1) indexM++;
+                if (indexT != 0) indexT--;
+                weaponS.setMotivity(options[indexM]);
+                weaponS.setTechnique(options[indexT]);
+                break;
+            case "technique":
+                if (indexM != 0) indexM--;
+                if (indexT != length-1) indexT++;
+                weaponS.setMotivity(options[indexM]);
+                weaponS.setTechnique(options[indexT]);
+                break;
+            case "advance":
+                if (indexA != length-1) indexA++;
+                weaponS.setAdvance(options[indexA]);
+                break;
+        }
     }
 
 }

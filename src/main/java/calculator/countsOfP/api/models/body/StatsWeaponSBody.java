@@ -8,13 +8,16 @@ public class StatsWeaponSBody {
 
     private Long finalLevel;
 
+    private String modifier;
+
     public StatsWeaponSBody() {
     }
 
-    public StatsWeaponSBody(String weaponName, Long currentLevel, Long finalLevel) {
+    public StatsWeaponSBody(String weaponName, Long currentLevel, Long finalLevel, String modifier) {
         this.weaponName = weaponName;
         this.currentLevel = currentLevel;
         this.finalLevel = finalLevel;
+        this.modifier = modifier;
     }
 
     public String getWeaponName() {
@@ -39,5 +42,13 @@ public class StatsWeaponSBody {
 
     public void setFinalLevel(Long finalLevel) {
         this.finalLevel = finalLevel;
+    }
+
+    public String getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(String modifier) {
+        this.modifier = modifier;
     }
 }

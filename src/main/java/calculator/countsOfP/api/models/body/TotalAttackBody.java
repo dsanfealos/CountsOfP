@@ -1,14 +1,18 @@
 package calculator.countsOfP.api.models.body;
 
+import calculator.countsOfP.models.weapon.Blade;
+import calculator.countsOfP.models.weapon.Handle;
+import calculator.countsOfP.models.weapon.StatsWeaponS;
+
 public class TotalAttackBody {
 
     private Boolean isWeaponS;
 
-    private Long weaponSId;
+    private StatsWeaponS weaponS;
 
-    private Long bladeId;
+    private Blade blade;
 
-    private Long handleId;
+    private Handle handle;
 
     private Integer motivity;
 
@@ -19,11 +23,11 @@ public class TotalAttackBody {
     public TotalAttackBody() {
     }
 
-    public TotalAttackBody(Boolean isWeaponS, Long weaponSId, Long bladeId, Long handleId, Integer motivity, Integer technique, Integer advance) {
+    public TotalAttackBody(Boolean isWeaponS, StatsWeaponS weaponS, Blade blade, Handle handle, Integer motivity, Integer technique, Integer advance) {
         this.isWeaponS = isWeaponS;
-        this.weaponSId = weaponSId;
-        this.bladeId = bladeId;
-        this.handleId = handleId;
+        this.weaponS = weaponS;
+        this.blade = blade;
+        this.handle = handle;
         this.motivity = motivity;
         this.technique = technique;
         this.advance = advance;
@@ -37,28 +41,28 @@ public class TotalAttackBody {
         isWeaponS = weaponS;
     }
 
-    public Long getWeaponSId() {
-        return weaponSId;
+    public StatsWeaponS getWeaponS() {
+        return weaponS;
     }
 
-    public void setWeaponSId(Long weaponSId) {
-        this.weaponSId = weaponSId;
+    public void setWeaponS(StatsWeaponS weaponS) {
+        this.weaponS = weaponS;
     }
 
-    public Long getBladeId() {
-        return bladeId;
+    public Blade getBlade() {
+        return blade;
     }
 
-    public void setBladeId(Long bladeId) {
-        this.bladeId = bladeId;
+    public void setBlade(Blade blade) {
+        this.blade = blade;
     }
 
-    public Long getHandleId() {
-        return handleId;
+    public Handle getHandle() {
+        return handle;
     }
 
-    public void setHandleId(Long handleId) {
-        this.handleId = handleId;
+    public void setHandle(Handle handle) {
+        this.handle = handle;
     }
 
     public Integer getMotivity() {

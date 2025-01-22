@@ -90,7 +90,7 @@ public class FullBuilderControllerTest {
         List<Long> armorPiecesIds = new java.util.ArrayList<>(List.of(6L, 30L, 60L, 90L));
         AttributesBody initialAttBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10, null);
         AttributesBody finalAttBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, amuletIds);
-        StatsWeaponSBody weaponSBody = new StatsWeaponSBody("Etiquette", 1L, 3L);
+        StatsWeaponSBody weaponSBody = new StatsWeaponSBody("Etiquette", 1L, 3L, null);
         FullBuildBody body = new FullBuildBody(initialAttBody, finalAttBody, true, null, weaponSBody, armorPiecesIds);
 
         mvc.perform(post("/build/build")

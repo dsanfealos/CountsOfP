@@ -68,7 +68,7 @@ public class FullBuildServiceTest {
         List<Long> armorPiecesIds = List.of(1L, 30L, 51L, 86L);
         AttributesBody initialAttBody = new AttributesBody(10L, 12, 15, 15, 15, 15, 10, null);
         AttributesBody finalAttBody = new AttributesBody(38L, 15, 20, 20, 20, 20, 15, amuletIds);
-        StatsWeaponSBody weaponSBody = new StatsWeaponSBody("Seven-coil spring sword", 1L, 6L);
+        StatsWeaponSBody weaponSBody = new StatsWeaponSBody("Seven-coil spring sword", 1L, 6L, "motivity");
         FullBuildBody body = new FullBuildBody(initialAttBody, finalAttBody, true, null, weaponSBody, armorPiecesIds);
 
         Map<String, Double> stats = new LinkedHashMap<>();
@@ -102,12 +102,11 @@ public class FullBuildServiceTest {
         List<Armor> armorPieces = List.of(buildService.getArmor(1L),buildService.getArmor(30L),buildService.getArmor(51L),buildService.getArmor(86L));
         StatsResponse statsResponse =new StatsResponse(38L, 15, 20, 20, 27, 23, 15, stats, 39449L);
         StatsWeaponSResponse weaponSResponse = new StatsWeaponSResponse(430L, materials, statsWeaponSDAO.findById(6L).get());
-        TotalAttackResponse attackResponse = new TotalAttackResponse("Seven-coil spring sword", 273, 0, 132, 0, 405);
+        TotalAttackResponse attackResponse = new TotalAttackResponse("Seven-coil spring sword", 273, 0, 132, 0, 387);
         FullBuildResponse reference = new FullBuildResponse(statsResponse, attackResponse, true, null, weaponSResponse, armorPieces, 42.3);
 
         FullBuildResponse response = buildService.build(body);
         Assertions.assertEquals(reference.getCurrentWeight(), response.getCurrentWeight());
-        //Todo falla el bonus físico
         Assertions.assertEquals(reference.getAttackResponse().getTotalAttack(), response.getAttackResponse().getTotalAttack());
         Assertions.assertEquals(reference.getArmorPieces().size(), response.getArmorPieces().size());
         for (int i = 0; i< reference.getArmorPieces().size(); i++){

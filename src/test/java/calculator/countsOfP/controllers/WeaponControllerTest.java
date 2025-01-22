@@ -43,7 +43,7 @@ public class WeaponControllerTest {
     @Transactional
     public void testUpgradeWeaponS() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
-        StatsWeaponSBody body = new StatsWeaponSBody("Holy sword of the ark", 2L, 5L);
+        StatsWeaponSBody body = new StatsWeaponSBody("Holy sword of the ark", 2L, 5L, null);
         Map<String, Integer> materials = new LinkedHashMap<>();
         materials.put("Dark moon moonstone of the covenant", 6);
         materials.put("Full moonstone of the covenant", 1);
@@ -62,7 +62,7 @@ public class WeaponControllerTest {
     public void testUpgradeWeaponN() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
         StatsWeaponNBody body = new StatsWeaponNBody("Bramble curved sword blade",
-                2L, 7L, 3L);
+                2L, 7L, 3L, null);
         Map<String, Integer> materials = new LinkedHashMap<>();
         materials.put("Hidden moonstone", 6);
         materials.put("Crescent moonstone", 7);
