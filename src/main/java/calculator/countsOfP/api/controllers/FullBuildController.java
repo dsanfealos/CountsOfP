@@ -15,7 +15,7 @@ import java.util.*;
 @RequestMapping("/build")
 public class FullBuildController {
 
-    private FullBuildService buildService;
+    private final FullBuildService buildService;
 
     public FullBuildController(FullBuildService buildService) {
         this.buildService = buildService;
@@ -30,7 +30,6 @@ public class FullBuildController {
 
     @PostMapping("/p_organ")
     public ResponseEntity<Object> costQuartz(@RequestBody Map<Integer, Integer> body) {
-
         try{
             return ResponseEntity.ok(buildService.costQuartzTotal(body));
         } catch(NotEnoughModulesException e){
@@ -53,24 +52,26 @@ public class FullBuildController {
 
     @PostMapping("/build")
     public ResponseEntity<Object> build(@RequestBody FullBuildBody body){
-        if (body.getFinalAttributesBody().getAmuletIds() != null) {
-            if (body.getFinalAttributesBody().getAmuletIds().size() > 5) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
-                        "Maximum number of amulets is 5.", "/build/build"));
-            }
+        if (body.getFinalAttributesBody().getAmuletIds().size() > 5) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
+                    "Maximum number of amulets is 5.", "/build/build"));
         }
         if (body.getArmorPiecesIds().size() > 4){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
                     "Maximum number of armor pieces is 4.", "/build/build"));
         }
-        Set<Integer> types = new HashSet<>();
-        for (Long armorId: body.getArmorPiecesIds()){
-            if (types.contains(buildService.getArmor(armorId).getType())){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
-                        "There are two or more armor pieces of the same type. They have to be four different types.",
-                        "/build/build"));
-            }
-            types.add(buildService.getArmor(armorId).getType());
+        if (areTypesRepeated(body.getArmorPiecesIds())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
+                    "There are two or more armor pieces of the same type. They have to be four different types.",
+                    "/build/build"));
+        }
+        if (isModifierNotValid(body.getStatsWeaponSBody().getModifier())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
+                    "Modifiers must be null, \"motivity\", \"technique\", or \"advance\".", "/build/build"));
+        }
+        if (isModifierNotValid(body.getStatsWeaponNBody().getModifier())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
+                    "Modifiers must be null, \"motivity\", \"technique\", or \"advance\".", "/build/build"));
         }
         return ResponseEntity.ok(buildService.build(body));
     }
@@ -83,5 +84,25 @@ public class FullBuildController {
     @GetMapping("/armor/{armorId}")
     public Armor getArmor(@PathVariable Long armorId){
         return buildService.getArmor(armorId);
+    }
+
+
+
+    private boolean areTypesRepeated(List<Long> armorPiecesIds){
+        Set<Integer> types = new HashSet<>();
+        for (Long armorId: armorPiecesIds){
+            if (types.contains(buildService.getArmor(armorId).getType())){
+                return true;
+            }
+            types.add(buildService.getArmor(armorId).getType());
+        }
+        return false;
+    }
+
+    private boolean isModifierNotValid(String modifier){
+        if (modifier != null){
+            return !modifier.equals("motivity") && !modifier.equals("technique") && !modifier.equals("advance");
+        }
+        return false;
     }
 }
