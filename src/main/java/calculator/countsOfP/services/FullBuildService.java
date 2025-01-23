@@ -46,17 +46,16 @@ public class FullBuildService {
     }
 
     public POrganResponse costQuartzTotal(Map<Integer, Integer> modules){
-        Integer cost = 0;
-        Integer totalModules = 0;
-        for (Integer level:modules.keySet()){
-            Integer moduleQuantity = modules.get(level);
-            Integer minimumTotalModules = 2*(level-1);
-            int nextLevel = level + 1;
+        int cost = 0;
+        int totalModules = 0;
+        for (int level:modules.keySet()){
+            int moduleQuantity = modules.get(level);
+            int minimumTotalModules = 2*(level-1);
             if (totalModules<minimumTotalModules){
                 throw new NotEnoughModulesException();
             }
             totalModules += moduleQuantity;
-            cost += moduleQuantity * pOrganDAO.findById(Long.valueOf(level)).get().getQuartzs();
+            cost += moduleQuantity * pOrganDAO.findById((long) level).get().getQuartzs();
         }
         return new POrganResponse(cost);
     }
