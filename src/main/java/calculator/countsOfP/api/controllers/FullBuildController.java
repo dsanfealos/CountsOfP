@@ -65,13 +65,16 @@ public class FullBuildController {
                     "There are two or more armor pieces of the same type. They have to be four different types.",
                     "/build/build"));
         }
-        if (isModifierNotValid(body.getStatsWeaponSBody().getModifier())){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
-                    "Modifiers must be null, \"motivity\", \"technique\", or \"advance\".", "/build/build"));
-        }
-        if (isModifierNotValid(body.getStatsWeaponNBody().getModifier())){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
-                    "Modifiers must be null, \"motivity\", \"technique\", or \"advance\".", "/build/build"));
+        if(body.getIsWeaponS()) {
+            if (isModifierNotValid(body.getStatsWeaponSBody().getModifier())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
+                        "Modifiers must be null, \"motivity\", \"technique\", or \"advance\".", "/build/build"));
+            }
+        }else {
+            if (isModifierNotValid(body.getStatsWeaponNBody().getModifier())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST,
+                        "Modifiers must be null, \"motivity\", \"technique\", or \"advance\".", "/build/build"));
+            }
         }
         return ResponseEntity.ok(buildService.build(body));
     }
