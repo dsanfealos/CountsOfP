@@ -11,7 +11,6 @@ import calculator.countsOfP.models.build.dao.POrganDAO;
 import calculator.countsOfP.models.build.dao.StatIncreaseArmorDAO;
 import calculator.countsOfP.models.player.Stat;
 import calculator.countsOfP.models.player.dao.StatDAO;
-import calculator.countsOfP.models.weapon.Handle;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,12 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class FullBuildService {
 
-    private POrganDAO pOrganDAO;
-    private PlayerService playerService;
-    private WeaponService weaponService;
-    private StatDAO statDAO;
-    private StatIncreaseArmorDAO statIncreaseArmorDAO;
-    private ArmorDAO armorDAO;
+    private final POrganDAO pOrganDAO;
+    private final PlayerService playerService;
+    private final WeaponService weaponService;
+    private final StatDAO statDAO;
+    private final StatIncreaseArmorDAO statIncreaseArmorDAO;
+    private final ArmorDAO armorDAO;
 
     public FullBuildService(POrganDAO pOrganDAO, PlayerService playerService, WeaponService weaponService, StatDAO statDAO, StatIncreaseArmorDAO statIncreaseArmorDAO, ArmorDAO armorDAO) {
         this.pOrganDAO = pOrganDAO;

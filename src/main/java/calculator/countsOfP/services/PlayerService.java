@@ -83,7 +83,7 @@ public class PlayerService {
             finalAttribute[5] = finalBody.getAdvance();
         }
 
-        Map<Long, Double> finalStats = increasedStatsMap(finalAttribute, finalBody.getAmuletIds()); //revisar lento
+        Map<Long, Double> finalStats = increasedStatsMap(finalAttribute, finalBody.getAmuletIds());
         response.setLevel(finalBody.getLevel());
         response.setVitality(finalAttribute[0]);
         response.setVigor(finalAttribute[1]);

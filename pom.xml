@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>calculator</groupId>
-	<artifactId>countsOfP</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>countsOfP</name>
+	<artifactId>counts_of_p</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<name>counts_of_p</name>
 	<description>A calculator for resources used on upgrades, and final stats of Lies of P features game.</description>
 	<url/>
 	<licenses>

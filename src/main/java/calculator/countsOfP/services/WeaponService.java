@@ -6,13 +6,11 @@ import calculator.countsOfP.api.models.body.TotalAttackBody;
 import calculator.countsOfP.api.models.response.StatsWeaponNResponse;
 import calculator.countsOfP.api.models.response.StatsWeaponSResponse;
 import calculator.countsOfP.api.models.response.TotalAttackResponse;
-import calculator.countsOfP.models.build.dao.POrganDAO;
 import calculator.countsOfP.models.player.dao.AttributeDAO;
 import calculator.countsOfP.models.weapon.*;
 import calculator.countsOfP.models.weapon.dao.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,23 +18,21 @@ import java.util.Map;
 @Service
 public class WeaponService {
 
-    private StatsWeaponSDAO statsWeaponSDAO;
-    private WeaponUpgradeSDAO weaponUpgradeSDAO;
-    private WeaponUpgradeNDAO weaponUpgradeNDAO;
-    private HandleDAO handleDAO;
-    private BladeDAO bladeDAO;
-    private POrganDAO pOrganDAO;
-    private ScalingDAO scalingDAO;
-    private AttributeDAO attributeDAO;
+    private final StatsWeaponSDAO statsWeaponSDAO;
+    private final WeaponUpgradeSDAO weaponUpgradeSDAO;
+    private final WeaponUpgradeNDAO weaponUpgradeNDAO;
+    private final HandleDAO handleDAO;
+    private final BladeDAO bladeDAO;
+    private final ScalingDAO scalingDAO;
+    private final AttributeDAO attributeDAO;
 
 
-    public WeaponService(StatsWeaponSDAO statsWeaponSDAO, WeaponUpgradeSDAO weaponUpgradeSDAO, WeaponUpgradeNDAO weaponUpgradeNDAO, HandleDAO handleDAO, BladeDAO bladeDAO, POrganDAO pOrganDAO, ScalingDAO scalingDAO, AttributeDAO attributeDAO) {
+    public WeaponService(StatsWeaponSDAO statsWeaponSDAO, WeaponUpgradeSDAO weaponUpgradeSDAO, WeaponUpgradeNDAO weaponUpgradeNDAO, HandleDAO handleDAO, BladeDAO bladeDAO, ScalingDAO scalingDAO, AttributeDAO attributeDAO) {
         this.statsWeaponSDAO = statsWeaponSDAO;
         this.weaponUpgradeSDAO = weaponUpgradeSDAO;
         this.weaponUpgradeNDAO = weaponUpgradeNDAO;
         this.handleDAO = handleDAO;
         this.bladeDAO = bladeDAO;
-        this.pOrganDAO = pOrganDAO;
         this.scalingDAO = scalingDAO;
         this.attributeDAO = attributeDAO;
     }
@@ -89,51 +85,8 @@ public class WeaponService {
         String weaponName = body.getBladeName() + " | " + handle.getName();
         if (body.getModifier() != null) modifyHandle(handle, body.getModifier());
 
-        StatsWeaponNResponse response = new StatsWeaponNResponse(weaponName, ergoCost, materials, weight, blade.getTotalAttack(), handle.getMotivity(),
+        return new StatsWeaponNResponse(weaponName, ergoCost, materials, weight, blade.getTotalAttack(), handle.getMotivity(),
                 handle.getTechnique(), handle.getAdvance(), blade.getPhysicalAttack(), blade.getElementalAttack(), blade, handle);
-        return response;
-    }
-
-    public List<StatsWeaponS> getAllWeaponsSWithLevels(){
-        return statsWeaponSDAO.findAll();
-    }
-
-    public List<StatsWeaponS> getAllWeaponsS(){
-        WeaponUpgradeS currentLevel = weaponUpgradeSDAO.findById(1L).get();
-        return statsWeaponSDAO.findByCurrentLevel(currentLevel);
-    }
-
-    public StatsWeaponS getWeaponS(Long id){
-        return statsWeaponSDAO.findById(id).get();
-    }
-
-    public List<StatsWeaponS> searchWeaponS(String keyword){
-        return statsWeaponSDAO.search(keyword);
-    }
-
-    public List<Blade> getAllBladesWithLevels(){
-        return bladeDAO.findAll();
-    }
-
-    public List<Blade> getAllBlades(){
-        WeaponUpgradeN currentLevel = weaponUpgradeNDAO.findById(1L).get();
-        return bladeDAO.findByCurrentLevel(currentLevel);
-    }
-
-    public Blade getBlade(Long id){
-        return bladeDAO.findById(id).get();
-    }
-
-    public List<Blade> searchBlade(String keyword){
-        return bladeDAO.search(keyword);
-    }
-
-    public List<Handle> getAllHandles(){
-        return handleDAO.findAll();
-    }
-
-    public Handle getHandle(Long id){
-        return handleDAO.findById(id).get();
     }
 
     public List<Handle> searchHandle(String keyword){
@@ -257,6 +210,48 @@ public class WeaponService {
                 weaponS.setAdvance(options[indexA]);
                 break;
         }
+    }
+
+    public List<StatsWeaponS> getAllWeaponsSWithLevels(){
+        return statsWeaponSDAO.findAll();
+    }
+
+    public List<StatsWeaponS> getAllWeaponsS(){
+        WeaponUpgradeS currentLevel = weaponUpgradeSDAO.findById(1L).get();
+        return statsWeaponSDAO.findByCurrentLevel(currentLevel);
+    }
+
+    public StatsWeaponS getWeaponS(Long id){
+        return statsWeaponSDAO.findById(id).get();
+    }
+
+    public List<StatsWeaponS> searchWeaponS(String keyword){
+        return statsWeaponSDAO.search(keyword);
+    }
+
+    public List<Blade> getAllBladesWithLevels(){
+        return bladeDAO.findAll();
+    }
+
+    public List<Blade> getAllBlades(){
+        WeaponUpgradeN currentLevel = weaponUpgradeNDAO.findById(1L).get();
+        return bladeDAO.findByCurrentLevel(currentLevel);
+    }
+
+    public Blade getBlade(Long id){
+        return bladeDAO.findById(id).get();
+    }
+
+    public List<Blade> searchBlade(String keyword){
+        return bladeDAO.search(keyword);
+    }
+
+    public List<Handle> getAllHandles(){
+        return handleDAO.findAll();
+    }
+
+    public Handle getHandle(Long id){
+        return handleDAO.findById(id).get();
     }
 
 }
