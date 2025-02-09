@@ -1,5 +1,7 @@
 <body>
         <h1 style="text-decoration: underline;">Documentation</h1>
+        <h2>API</h2>
+        <p>URL = countsofp-api.up.railway.app</p>
         <h2 style="text-decoration: underline;">Levels</h2>
         <p>In order to understand weapon and arm levels, the API will follow the next rules:</p><br>
         <p>Arm in game: -, I, II, III</p>
