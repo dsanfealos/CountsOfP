@@ -1,7 +1,9 @@
 <body>
         <h1 style="text-decoration: underline;">Documentation</h1>
         <h2>API</h2>
-        <p>URL = countsofp-api.up.railway.app</p>
+        <p>URL = countsofp.com</p>
+        <h2 style="text-decoration: underline;">Overview</h2>
+        <p>This is an API that anyone can use to calculate the resources and ergo needed to upgrade main character's level, weapons, mechanical arm and P-Organ. It also has a special mode to build up your character, and it will show the resulting stats, weight and cost.</p>
         <h2 style="text-decoration: underline;">Levels</h2>
         <p>In order to understand weapon and arm levels, the API will follow the next rules:</p><br>
         <p>Arm in game: -, I, II, III</p>
