@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Counts of P - Readme</title>
     <style>
         *{
-            color: rgb(194, 190, 190);
+            color: rgb(195, 191, 191);
+            font-family: Cambria,serif;
         }
         .json{
-            color: #ff0000;
+            color: #612d32;
+        }
+        details summary{
+            background-color: #796741;
+            padding: 4px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        details[open]{
+            background-color: #556b80;
+            border-radius: 5px;
+        }
+        li{
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        h1,h2,h3{
+            color: #4dc0e4;
+        }
+        .full-p{
+            padding: 0 30px 20px 30px;
         }
         .post{
             color: white;
@@ -33,191 +54,205 @@
         }
     </style>
 </head>
-<body style="background-color: rgb(33, 32, 32); margin-left: 20%; margin-right: 20%;">
-<h1 style="text-decoration: underline;">Documentation</h1>
-<h2 style="text-decoration: underline;">Levels</h2>
-<p>In order to understand weapon and arm levels, the API will follow the next rules:</p><br>
-<p>Arm in game: -, I, II, III</p>
-<p>Arm in API: 0, 1, 2, 3</p><br>
-<p>Weapons in game: 0, +1, +2, +3, +4, +5, +6, +7, +8, +9, +10</p>
-<p>Weapons in API: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11</p>
+<body style="background-color: rgb(22,22,30); margin:0">
+<header style="text-align: center; padding-bottom: 150px; padding-top: 50px; background-image: linear-gradient(#445269, #16161e);">
+    <h1 style="color: #c1bdbd;font-size: 60px;font-family:Goudy Old Style,serif;">Counts Of <span style="color: #9a2c2e;font-family:Goudy Old Style,serif;">P</span> - API</h1>
+</header>
+<div style="background-color: #273547;border-radius: 35px; margin: 5% 15% 5% 15%;padding: 2%;">
+    <div style="background-color: #445269; padding: 15px;">
+    <h1 style="text-decoration: underline #796741; margin-top: 0">Documentation</h1>
+    <h2 >Overview</h2>
+    <p>This is an API that anyone can use to calculate the resources and ergo needed to upgrade main character's level, weapons, mechanical
+        arm and P-Organ. It also has a special mode to build up your character, and it will show the resulting stats, weight and cost.</p>
+    <h3>API</h3>
+    <p>HOME URL = https://countsofp.com</p>
+    <h3>Levels</h3>
+    <p>In order to understand weapon and arm levels, the API will follow the next rules:</p><br>
+    <p>Arm in game: -, I, II, III</p>
+    <p>Arm in API: 0, 1, 2, 3</p><br>
+    <p>Weapons in game: 0, +1, +2, +3, +4, +5, +6, +7, +8, +9, +10</p>
+    <p>Weapons in API: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11</p>
+    </div>
+    <div style="background-color: #445269; margin-top: 30px; padding: 15px 50px 15px 15px;">
+        <h2 style="text-decoration: underline #796741;">Endpoints</h2>
+        <ul>
+            <li>Player</li>
+                <details><summary><span class="post">POST</span> Simulate stats: /player/simulate</summary>
+                    <pre>               Body: JSON Example
+                            <code><span class="json">{
+                                    "initial":{
+                                    "level":10,
+                                    "vitality":12,
+                                    "vigor":15,
+                                    "capacity":15,
+                                    "motivity":15,
+                                    "technique":15,
+                                    "advance":10
+                                },
+                                "final":{
+                                    "level":38,
+                                    "vitality":15,
+                                    "vigor":20,
+                                    "capacity":20,
+                                    "motivity":20,
+                                    "technique":20,
+                                    "advance":15
+                                }
+                            }</span></code>
+                    </pre>
 
-<h2 style="text-decoration: underline;">Endpoints</h2>
-<ul>
-    <li>Player</li>
-    <pre>-Simulate stats
-                <span class="post">POST</span>: /player/simulate
-                Body: JSON Example
-                    <span class="json">{
-                            "initial":{
-                            "level":10,
-                            "vitality":12,
-                            "vigor":15,
-                            "capacity":15,
-                            "motivity":15,
-                            "technique":15,
-                            "advance":10
-                        },
-                        "final":{
-                            "level":38,
-                            "vitality":15,
-                            "vigor":20,
-                            "capacity":20,
-                            "motivity":20,
-                            "technique":20,
-                            "advance":15
-                        }
-                    }</span>
+                     <p class="full-p">It gives a response with the result stats after increasing the attributes.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Amulet list: /player/amulet</summary>
+                    <p class="full-p">It gives a response with a list of all the amulets.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Amulet: /player/amulet/{amuletId}</summary>
+                    <p class="full-p">It gives a response with the data of the amulet with id = amuletId.</p>
+                </details>
+            <li>Weapon</li>
+                <details><summary><span class="get">GET</span> Special Weapon: /weapon/S/{weaponId}</summary>
+                    <p class="full-p">It gives a response with the data of the special weapon with id = weaponId.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Special Weapon List (with all levels): /weapon/S/all</summary>
+                    <p class="full-p">It gives a response with the list of all the special weapons at all levels (1-6).</p>
+                </details>
+                <details><summary><span class="get">GET</span> Special Weapon List (only level 1): /weapon/S</summary>
+                    <p class="full-p">It gives a response with the list of all the special weapons at level 1.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Special Weapon Search: /weapon/S/search?{keyword}</summary>
+                     <p class="full-p">It gives a response with the list of all special weapons that have a name similar
+                         to the keyword.</p>
+                </details>
+                <details><summary><span class="post">POST</span> Upgrade Special Weapon: /weapon/S/upgrade</summary>
+                        <pre>           Body: JSON Example
+                            <code><span class="json">{
+                                "weaponName":"Holy sword of the ark",
+                                "currentLevel":2,
+                                "finalLevel":5
+                            }</span></code></pre>
+                     <p class="full-p">It gives a response with the result stats and cost of the weapon upgrade from level
+                     A to level B. It includes modified handle, that can have values [null, "motivity",
+                         "technique", "advance"].</p>
+                </details>
+                <details><summary><span class="get">GET</span> Blade: /weapon/blade/{bladeId}</summary>
+                    <p class="full-p">It gives a response with the data of the blade with id = bladeId.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Blade List (with all levels): /weapon/blade/all</summary>
+                    <p class="full-p">It gives a response with the list of all the blades at all levels (1-11).</p>
+                </details>
+                <details><summary><span class="get">GET</span> Blade List (only level 1): /weapon/blade</summary>
+                    <p class="full-p">It gives a response with the list of all the blades at level 1.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Blade Search: /weapon/blade/search?{keyword}</summary>
+                     <p class="full-p">It gives a response with the list of all blades that have a name similar
+                         to the keyword.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Handle: /weapon/handle/{handleId}</summary>
+                    <p class="full-p">It gives a response with the data of the handle with id = handleId.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Handle List: /weapon/handle</summary>
+                    <p class="full-p">It gives a response with the list of all the handles.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Handle Search: /weapon/handle/search?{keyword}</summary>
+                     <p class="full-p">It gives a response with the list of all handles that have a name similar
+                         to the keyword.</p>
+                </details>
+                <details><summary><span class="post">POST</span> Upgrade Normal Weapon: /weapon/N/upgrade</summary>
+                        <pre>           Body: JSON Example
+                            <code><span class="json">{
+                                "bladeName":"Bramble curved sword blade",
+                                "currentLevel":3,
+                                "finalLevel":11,
+                                "handleId":3
+                            }</span></code></pre>
+                     <p class="full-p">It gives a response with the result stats and cost of the weapon upgrade from level
+                     A to level B. It includes modified handle, that can have values [null, "motivity",
+                         "technique", "advance"].</p>
+                </details>
+            <li>Full Build</li>
+                <details><summary><span class="post">POST</span> Upgrade arm: /build/arm</summary>
+                        <pre>           Body: JSON Example
+                            <code><span class="json">{
+                                "initialLevel":1,
+                                "finalLevel":3
+                            }</span></code></pre>
+                    <p class="full-p">It gives a response with the cost of materials of upgrading the arm from level A to level B.</p>
+                </details>
+                <details><summary><span class="post">POST</span> Upgrade P Organ: /build/p_organ</summary>
+                        <pre>           Body: JSON Example
+                            <code><span class="json">{
+                                "1":4,
+                                "2":0,
+                                "3":2,
+                                "4":1
+                            }</span></code></pre>
+                    <p class="full-p">It gives a response with the Quartz cost of upgrading X nodes in each P Organ level.</p>
 
-             It gives a response with the result stats after increaseing the attributes.</pre>
-    <pre>-Amulet list
-                <span class="get">GET</span>: /player/amulet
-             It gives a response with a list of all the amulets.</pre>
-    <pre>-Amulet
-                <span class="get">GET</span>: /player/amulet/{amuletId}
-             It gives a response with the data of the amulet with id = amuletId</pre>
-    <li>Weapon</li>
-    <pre>-Special Weapon
-                <span class="get">GET</span>: /weapon/S/{weaponId}
-             It gives a response with the data of the special weapon with id = weaponId</pre>
-    <pre>-Special Weapon List (with all levels)
-                <span class="get">GET</span>: /weapon/S/all
-             It gives a response with the list of all the special weapons at all levels (1-6)</pre>
-    <pre>-Special Weapon List (only level 1)
-                <span class="get">GET</span>: /weapon/S
-             It gives a response with the list of all the special weapons at level 1</pre>
-    <pre>-Special Weapon Search
-                <span class="get">GET</span>: /weapon/S/search?{keyword}
-             It gives a response with the list of all special weapons that have a name similar
-             to the keyword.</pre>
-    <pre>-Upgrade Special Weapon
-                <span class="post">POST</span>: /weapon/S/upgrade
-                Body: JSON Example
-                    <span class="json">{
-                        "weaponName":"Holy sword of the ark",
-                        "currentLevel":2,
-                        "finalLevel":5
-                    }</span>
-             It gives a response with the result stats and cost of the weapon upgrade from level
-             A to level B. It includes modified handle, that can have values [null, "motivity",
-             "technique", "advance"].</pre>
-    <pre>-Blade
-                <span class="get">GET</span>: /weapon/blade/{bladeId}
-             It gives a response with the data of the blade with id = bladeId</pre>
-    <pre>-Blade List (with all levels)
-                <span class="get">GET</span>: /weapon/blade/all
-             It gives a response with the list of all the blades at all levels (1-11)</pre>
-    <pre>-Blade List (only level 1)
-                <span class="get">GET</span>: /weapon/blade
-             It gives a response with the list of all the blades at level 1</pre>
-    <pre>-Blade Search
-                <span class="get">GET</span>: /weapon/blade/search?{keyword}
-             It gives a response with the list of all blades that have a name similar
-             to the keyword.</pre>
-    <pre>-Handle
-                <span class="get">GET</span>: /weapon/handle/{handleId}
-             It gives a response with the data of the handle with id = handleId</pre>
-    <pre>-Handle List
-                <span class="get">GET</span>: /weapon/handle
-             It gives a response with the list of all the handles</pre>
-    <pre>-Handle Search
-                <span class="get">GET</span>: /weapon/handle/search?{keyword}
-             It gives a response with the list of all handles that have a name similar
-             to the keyword.</pre>
-    <pre>-Upgrade Normal Weapon
-                <span class="post">POST</span>: /weapon/N/upgrade
-                Body: JSON Example
-                    <span class="json">{
-                        "bladeName":"Bramble curved sword blade",
-                        "currentLevel":3,
-                        "finalLevel":11,
-                        "handleId":3
-                    }</span>
-             It gives a response with the result stats and cost of the weapon upgrade from level
-             A to level B. It includes modified handle, that can have values [null, "motivity",
-             "technique", "advance"].</pre>
-    <li>Full Build</li>
-    <pre>-Upgrade arm
-                <span class="post">POST</span>: /build/arm
-                Body: JSON Example
-                    <span class="json">{
-                        "initialLevel":1,
-                        "finalLevel":3
-                    }</span>
-             It gives a response with the cost of materials of upgrading the arm from level A to level B.</pre>
-    <pre>-Upgrade P Organ
-                <span class="post">POST</span>: /build/p_organ
-                Body: JSON Example
-                    <span class="json">{
-                        "1":4,
-                        "2":0,
-                        "3":2,
-                        "4":1
-                    }</span>
-             It gives a response with the Quartz cost of upgrading X nodes in each P Organ level.
+                     <p class="full-p"><span class="warning">WARNING:</span> Each level past level 1 needs 2 previous nodes upgraded to unlock. It is needed 2 nodes
+                         to unlock level 2, 4 nodes to unlock level 3, 6 nodes to unlock level 4, etc.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Armor: /build/armor/{armorId}</summary>
+                    <p class="full-p">It gives a response with the data of the armor with id = armorId.</p>
+                </details>
+                <details><summary><span class="get">GET</span> Armor List: /build/armor</summary>
+                    <p class="full-p">It gives a response with a list of all armors.</p>
+                </details>
+                <details><summary><span class="post">POST</span> Build: /build/build</summary>
+                        <pre>           Body: JSON Example
+                            <code><span class="json">{
+                                "initialAttributesBody":{
+                                    "level":10,
+                                    "vitality":12,
+                                    "vigor":15,
+                                    "capacity":15,
+                                    "motivity":15,
+                                    "technique":15,
+                                    "advance":10
+                                },
+                                "finalAttributesBody":{
+                                    "level":38,
+                                    "vitality":15,
+                                    "vigor":20,
+                                    "capacity":20,
+                                    "motivity":20,
+                                    "technique":20,
+                                    "advance":15,
+                                    "amuletIds":[
+                                        2,
+                                        4,
+                                        15,
+                                        21,
+                                        24
+                                    ]
+                                },
+                                "isWeaponS": true,
+                                "statsWeaponNBody": null,
+                                "statsWeaponSBody":{
+                                    "weaponName":"Holy sword of the ark",
+                                    "currentLevel":2,
+                                    "finalLevel":5,
+                                    "modifier":"motivity"
+                                },
+                                "armorPiecesIds":[
+                                    6,
+                                    34,
+                                    64,
+                                    95
+                                ]
+                            }</span></code></pre>
+                     <p class="full-p">It gives a response with the result stats of the main character and his weapon, including current
+                     weight, and the resources needed (ergo and materials) to upgrade main character from level A to B
+                     and weapon from level C to D. It also can add armor pieces and amulets. It includes modified handle
+                         , that can have values [null, "motivity", "technique", "advance"].</p>
 
-             <span class="warning">WARNING:</span> Each level past level 1 needs 2 previous nodes upgraded to unlock. It is needed 2 nodes
-              to unlock level 2, 4 nodes to unlock level 3, 6 nodes to unlock level 4, etc.</pre>
-    <pre>-Armor
-                <span class="get">GET</span>: /build/armor/{armorId}
-             It gives a response with the data of the armor with id = armorId.</pre>
-    <pre>-Armor List
-                <span class="get">GET</span>: /build/armor
-             It gives a response with a list of all armors.</pre>
-    <pre>-Build
-                <span class="post">POST</span>: /build/build
-                Body: JSON Example
-                    <span class="json">{
-                        "initialAttributesBody":{
-                            "level":10,
-                            "vitality":12,
-                            "vigor":15,
-                            "capacity":15,
-                            "motivity":15,
-                            "technique":15,
-                            "advance":10
-                        },
-                        "finalAttributesBody":{
-                            "level":38,
-                            "vitality":15,
-                            "vigor":20,
-                            "capacity":20,
-                            "motivity":20,
-                            "technique":20,
-                            "advance":15,
-                            "amuletIds":[
-                                2,
-                                4,
-                                15,
-                                21,
-                                24
-                            ]
-                        },
-                        "isWeaponS": true,
-                        "statsWeaponNBody": null,
-                        "statsWeaponSBody":{
-                            "weaponName":"Holy sword of the ark",
-                            "currentLevel":2,
-                            "finalLevel":5,
-                            "modifier":"motivity"
-                        },
-                        "armorPiecesIds":[
-                            6,
-                            34,
-                            64,
-                            95
-                        ]
-                    }</span>
-             It gives a response with the result stats of the main character and his weapon, including current
-             weight, and the resources needed (ergo and materials) to upgrade main character from level A to B
-             and weapon from level C to D. It also can add armor pieces and amulets. It includes modified handle
-             , that can have values [null, "motivity", "technique", "advance"].
-
-             <span class="warning">WARNING:</span>
-             *Armor pieces must be different type (there are 4 types/slots of defensive pieces in the
-             game), and can not be more than 4 pieces.
-             *Amulets can not be more than 5 at the same time.</pre>
-</ul>
-
+                     <p class="full-p"><span class="warning">WARNING:</span>
+                     *Armor pieces must be different type (there are 4 types/slots of defensive pieces in the
+                     game), and can not be more than 4 pieces.
+                         *Amulets can not be more than 5 at the same time.</p>
+                </details>
+        </ul>
+    </div>
+</div>
+<div class="footer" style="position: fixed; bottom: 0; text-align: center; background-color: #612d32; width: 100%">Check the code on <a href="https://github.com/dsanfealos/CountsOfP" style="text-decoration: none">Github!</a></div>
 </body>
 </html>
