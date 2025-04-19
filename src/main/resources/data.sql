@@ -1,3 +1,24 @@
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `stat_increase`;
+Truncate Table `stat_increase_amulet`;
+Truncate Table `stat_increase_armor`;
+Truncate Table `scaling`;
+TRUNCATE TABLE `attribute_increase_amulet`;
+TRUNCATE TABLE `blade`;
+TRUNCATE TABLE `handle`;
+TRUNCATE TABLE `stats_weapon_s`;
+TRUNCATE TABLE `level_p`;
+TRUNCATE TABLE `amulet`;
+TRUNCATE TABLE `armor`;
+TRUNCATE TABLE `attribute`;
+TRUNCATE TABLE `weapon_upgrade_n`;
+TRUNCATE TABLE `weapon_upgrade_s`;
+TRUNCATE TABLE `p_organ`;
+TRUNCATE TABLE `stat`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+
 
 INSERT INTO `amulet` (id, description, name, weight) VALUES (1,'Increases HP by 7%.','Life Amulet',1.3),(2,'Increases HP by 13%.','Life Amulet +1',2.4),(3,'Increases Stamina by 10%.','Leaping Amulet',1.0),(4,'Increases Stamina by 15%.','Leaping Amulet +1',3.6),(5,'Increases Legion by 20%.','Veteran\'s Amulet',2.4),(6,'Reduces durability loss.','Swordmanship Master\'s Amulet',2.0),(7,'Restores 1HP/sec.','Recharged Amulet',2.9),(8,'Restores 2HP/sec.','Recharged Amulet +1',4.1),(9,'Increases Stamina regen.','Patience Amulet',2.7),(10,'Increases HP/Stamina/Legion by 5%/7%/7%.','Blue Guardianship Amulet',1.7),(11,'Increases HP/Stamina/Legion by 6%/8%/8%.','Blue Guardianship Amulet +1',2.4),(12,'Increases HP/Stamina/Legion by 7%/10%/10%.','Blue Guardianship Amulet +2',3.4),(13,'Increases ergo collection by 6,5%.','Hunter\'s Amulet',1.4),(14,'Increases ergo collection by 10%.','Hunter\'s Amulet +1',2.4),(15,'Increases motivity by 4.','Strength Amulet',1.7),(16,'Increases motivity by 6.','Strength Amulet +1',2.4),(17,'Increases motivity by 9.','Strength Amulet +2',3.4),(18,'Increases technique by 4.','Technique Amulet',1.7),(19,'Increases technique by 6.','Technique Amulet+1',2.4),(20,'Increases technique by 9.','Technique Amulet+2',3.4),(21,'Increases advance by 4.','Transformation Amulet',2.5),(22,'Increases advance by 6.','Transformation Amulet +1',3.4),(23,'Increases advance by 9.','Transformation Amulet +2',4.3),(24,'Increases motivity and technique by 3.','Red Fox\'s Amulet',2.4),(25,'Increases max weight by 15%.','Carrier\'s Amulet',3.3),(26,'Increases max weight by 30%.','Carrier\'s Amulet +1',4.1),(27,'Increases Physical Reduction by 8.','Iron Wall Amulet',3.4),(28,'Reduces falling damage.','Black Cat\'s Amulet',1.2),(29,'Increases Resistance to Disruption/Shock/Break by 140/60/60.','Indomitable Amulet',2.5),(30,'Increases Resistance to Disruption/Shock/Break by 200/80/80.','Indomitable Amulet+1',3.8),(31,'Increases damage to carcasses by 10%.','Carcass Butcher\'s Amulet',2.0),(32,'Increases damage to humans by 10%.','Murderer Puppet\'s Amulet',2.0),(33,'Increases damage to puppets by 10%.','Puppet Destroyer\'s Amulet',2.0),(34,'Increses Critical Damage by 25%.','Assasin\'s Amulet',2.8),(35,'Increases Attack by 4%/Fable slot.','Extreme Modification Amulet',9.3),(36,'Increases damage by 20% after perfect block (first attack during 5 seconds).','Conquering Amulet',9.7),(37,'There is a chance to not consume healing uses.','Nameless One\'s Amulet',8.4),(38,'Increases 1 level of the mechanical arm.','Triumvirate Amulet',7.8),(39,'Increases Physical damage after secuential hits.','Arm of God Amulet',9.3),(40,'Allows to dodge fury attacks.','Ghost Walk Amulet',14.9),(41,'Perfect block does not consume durability.','Impregnable Fortress Amulet',10.2),(42,'Increases Fable damage by 20% against staggeredd enemies.','Awakened God\'s Amulet',11.2),(43,'Player becomes inmune to all status ailments.','Piercing Hatred Amulet',14.5);
 
