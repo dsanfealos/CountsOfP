@@ -6,12 +6,12 @@ import calculator.countsOfP.models.player.Stat;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface StatIncreaseAmuDAO extends ListCrudRepository<StatIncreaseAmu, Long> {
-    Optional<StatIncreaseAmu> findByAmuletAndStat(Amulet amulet, Stat stat);
     @Query("SELECT sia FROM StatIncreaseAmu sia WHERE sia.amulet IN :amulets AND sia.stat IN :stats")
     List<StatIncreaseAmu> findByAmuletsAndStats(@Param("amulets") List<Amulet> amulets, @Param("stats") List<Stat> stats);
 }

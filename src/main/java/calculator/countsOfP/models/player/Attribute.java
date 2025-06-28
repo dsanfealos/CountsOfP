@@ -23,15 +23,15 @@ public class Attribute {
     private String spritePath;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatIncreaseAtt> statIncreaseAtts = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttributeIncreaseAmu> attributeIncreaseAmus = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "attribute", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Scaling> scalings = new ArrayList<>();
 
     public Long getId() {

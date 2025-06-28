@@ -42,6 +42,12 @@ public class PlayerService {
         this.statIncreaseAmuDAO = statIncreaseAmuDAO;
     }
 
+    //Static method to avoid generating retained lambdas
+    private static void mergeStat(Map<Long, Double> target, Map<Long, Double> source) {
+        source.forEach((statId, value) -> target.merge(statId, value, Double::sum));
+    }
+
+    //Not affected
     public Long costUpgradeLevelP(Long initial, Long destination){
         return LongStream.rangeClosed(initial, destination - 1)
                 .mapToObj(levelPDAO::findById)
@@ -95,6 +101,7 @@ public class PlayerService {
         return response;
     }
 
+    //Affected by retained lambdas
     public Map<Long, Double> increasedStatsMap(int[] finalAttributes, List<Long> amuletIds) {
         Map<Long, Double> finalStats = new HashMap<>();
         List<Attribute> attributes = attributeDAO.findAll();
@@ -109,8 +116,7 @@ public class PlayerService {
             int finalAttribute = finalAttributes[index];
             Map<Long, Double> increasedStats = increaseStatsByAttribute(attribute.getId(), finalAttribute);
 
-            Map<Long, Double> finalStats1 = finalStats;
-            increasedStats.forEach((statId, increaseValue) -> finalStats1.merge(statId, increaseValue, Double::sum));
+            mergeStat(finalStats, increasedStats);
         }
 
         if (amuletIds != null) {
@@ -120,13 +126,14 @@ public class PlayerService {
         return finalStats;
     }
 
+    //Not affected, but there is a very slight possibility of retaining lambdas
     public Map<Long, Double> increaseStatsByAmulet(Map<Long, Double> finalStats, List<Long> amuletIds){
         double result;
 
         List<Amulet> amulets = new ArrayList<>();
-        amuletIds.forEach(id -> amulets.add(getAmulet(id)));
+        amuletIds.forEach(id -> amulets.add(getAmulet(id)));    //**
         List<Stat> stats = new ArrayList<>();
-        finalStats.keySet().forEach(id -> stats.add(statDAO.findById(id).get()));
+        finalStats.keySet().forEach(id -> stats.add(statDAO.findById(id).get()));   //**
         List<StatIncreaseAmu> allIncreases = statIncreaseAmuDAO.findByAmuletsAndStats(amulets, stats);
         for (StatIncreaseAmu increase : allIncreases){
             long statId = increase.getStat().getId();
@@ -171,6 +178,6 @@ public class PlayerService {
     }
 
     public List<Amulet> getAllAmulets(){
-        return amuletDAO.findAll();
+        return amuletDAO.findAllNamed();
     }
 }

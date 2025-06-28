@@ -213,7 +213,7 @@ public class WeaponService {
     }
 
     public List<StatsWeaponS> getAllWeaponsSWithLevels(){
-        return statsWeaponSDAO.findAll();
+        return statsWeaponSDAO.findAllNamed();
     }
 
     public List<StatsWeaponS> getAllWeaponsS(){
