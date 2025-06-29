@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity
 @Table
+@NamedQuery(name = "Amulet.findAllNamed" , query = "SELECT a FROM Amulet a")
 public class Amulet {
 
     @Id
@@ -22,10 +23,10 @@ public class Amulet {
     @Column(name = "weight", columnDefinition = "Decimal(3,1)")
     private Double weight;
 
-    @OneToMany(mappedBy = "amulet", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "amulet", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatIncreaseAmu> statIncreaseAmus = new ArrayList<>();
 
-    @OneToMany(mappedBy = "amulet", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "amulet", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttributeIncreaseAmu> attributeIncreaseAmus = new ArrayList<>();
 
     public Long getId() {

@@ -22,7 +22,7 @@ public class Armor {
     @Column(name = "type")
     private Integer type;
 
-    @OneToMany(mappedBy = "armor", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "armor", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatIncreaseArmor> statIncreaseArmors = new ArrayList<>();
 
     public Long getId() {

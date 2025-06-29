@@ -24,15 +24,15 @@ public class Stat {
     private String spritePath;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatIncreaseAtt> statIncreaseAtts = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatIncreaseAmu> statIncreaseAmus = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "stat", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatIncreaseArmor> statIncreaseArmors = new ArrayList<>();
 
     @Column(name = "base_value", columnDefinition = "Decimal(5,2)")

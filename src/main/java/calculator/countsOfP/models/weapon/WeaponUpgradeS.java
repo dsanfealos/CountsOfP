@@ -24,7 +24,7 @@ public class WeaponUpgradeS {
     private Integer quantity;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "currentLevel", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "currentLevel", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StatsWeaponS> statsWeaponS;
 
     public Long getCurrentLevel() {

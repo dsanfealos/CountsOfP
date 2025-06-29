@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "stats_weapon_s")
+@NamedQuery(name = "StatWeaponS.findAllNamed", query = "SELECT a FROM StatsWeaponS a")
 public class StatsWeaponS {
 
     @Id
