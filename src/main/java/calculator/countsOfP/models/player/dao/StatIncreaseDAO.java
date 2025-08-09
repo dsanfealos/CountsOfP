@@ -12,7 +12,5 @@ import java.util.Optional;
 
 @Repository
 public interface StatIncreaseDAO extends JpaRepository<StatIncreaseAtt, Long> {
-    StatIncreaseAtt findByAttributeAndAttributeValueAndStat(Attribute attribute, Integer value, Stat stat);
-    List<StatIncreaseAtt> findByAttributeAndAttributeValueBetween(Attribute attribute, Integer initialValue, Integer finalValue);
     List<StatIncreaseAtt> findByAttributeAndAttributeValue(Attribute attribute, Integer attributeValue);
 }
